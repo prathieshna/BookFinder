@@ -11,6 +11,7 @@ import lk.prathieshna.bookfinder.adapters.BookSearchAdapter
 import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.middleware.utils.getLastVisibleItem
 import lk.prathieshna.bookfinder.state.AppState
+import lk.prathieshna.bookfinder.state.UdfBaseState
 import lk.prathieshna.bookfinder.state.getVolumes
 
 
@@ -22,7 +23,7 @@ class SearchActivity : BaseActivity() {
     private var isLoading: Boolean = false
     private var isEOL: Boolean = false
 
-    override fun onStateUpdate(state: AppState, action: BaseAction): Boolean {
+    override fun onStateUpdate(state: UdfBaseState<AppState>, action: BaseAction): Boolean {
         return when (action) {
             is GetVolumesBySearch -> {
                 isEOL = searchResultItems.size == getVolumes(state).size
@@ -38,7 +39,7 @@ class SearchActivity : BaseActivity() {
         }
     }
 
-    override fun onRawStateUpdate(state: AppState) {
+    override fun onRawStateUpdate(state: UdfBaseState<AppState>) {
     }
 
     override fun onError(action: BaseAction) {

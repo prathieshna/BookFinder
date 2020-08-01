@@ -5,7 +5,7 @@ import lk.prathieshna.bookfinder.state.ActionStatus
 import org.rekotlin.Action
 
 abstract class BaseAction(
-    val id: String? = "",
+    private val id: String? = "",
     var status: ActionStatus? = ActionStatus.INIT,
     var error: ApiError? = null
 ) :
@@ -30,7 +30,4 @@ sealed class RemoveStateStatus(
 ) : BaseAction(baseId, actionStatus, error) {
     class Perform(val uuid: String, actionId: String?) :
         RemoveStateStatus(baseId = actionId, actionStatus = ActionStatus.INIT)
-
-    class Success(actionId: String?) :
-        RemoveStateStatus(baseId = actionId, actionStatus = ActionStatus.COMPLETED)
 }

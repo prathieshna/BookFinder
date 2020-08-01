@@ -3,10 +3,14 @@ package lk.prathieshna.bookfinder.reducers
 import lk.prathieshna.bookfinder.actions.GetVolumesBySearch
 import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.state.AppState
+import lk.prathieshna.bookfinder.state.UdfBaseState
 import lk.prathieshna.bookfinder.state.getVolumes
 import org.rekotlin.Action
 
-fun getVolumesBySearchReducer(action: Action, state: AppState): AppState {
+fun getVolumesBySearchReducer(
+    action: Action,
+    state: UdfBaseState<AppState>
+): UdfBaseState<AppState> {
     when (action as GetVolumesBySearch) {
         is GetVolumesBySearch.Perform -> {
             val data = action as GetVolumesBySearch.Perform
@@ -19,10 +23,11 @@ fun getVolumesBySearchReducer(action: Action, state: AppState): AppState {
                     ?: mutableListOf()
             }
 
-            val localState = state.copy(searchResult = action.searchResult.copy(items = results))
+            val newAppState =
+                state.state.copy(searchResult = action.searchResult.copy(items = results))
 
             return updateActionsStateStatus(
-                localState, action.getId(), GetVolumesBySearch.Success(action.getId())
+                state, action.getId(), GetVolumesBySearch.Success(action.getId()), newAppState
             )
         }
         is GetVolumesBySearch.Failure -> {

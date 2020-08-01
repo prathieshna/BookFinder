@@ -1,17 +1,28 @@
 package lk.prathieshna.bookfinder.middleware
 
 import lk.prathieshna.bookfinder.actions.GetVolumesBySearch
-import lk.prathieshna.bookfinder.state.AppState
+import lk.prathieshna.bookfinder.state.UdfBaseState
+import org.rekotlin.Action
+import org.rekotlin.DispatchFunction
 import org.rekotlin.Middleware
 
-internal val NetworkMiddleware: Middleware<AppState> = { dispatch, _ ->
-    { next ->
-        { action ->
-            when (action) {
-                is GetVolumesBySearch.Request -> getVolumesBySearch(dispatch, action)
+typealias MiddleWareHandler = (DispatchFunction, Action) -> Unit
+
+fun <T> getNetworkMiddleware(handler: MiddleWareHandler): Middleware<UdfBaseState<T>> {
+    return { dispatch: DispatchFunction, _ ->
+        { next ->
+            { action ->
+                handler(dispatch, action)
+                next(action)
             }
-            next(action)
         }
     }
 }
 
+val middlewareHandler: MiddleWareHandler = { dispatch: DispatchFunction, action: Action ->
+    when (action) {
+        is GetVolumesBySearch.Request -> {
+            getVolumesBySearch(dispatch, action)
+        }
+    }
+}

@@ -1,11 +1,15 @@
 package lk.prathieshna.bookfinder.store
 
-import lk.prathieshna.bookfinder.middleware.NetworkMiddleware
-import lk.prathieshna.bookfinder.reducers.appReducers
+import lk.prathieshna.bookfinder.middleware.getNetworkMiddleware
+import lk.prathieshna.bookfinder.middleware.middlewareHandler
+import lk.prathieshna.bookfinder.reducers.getAppReducer
+import lk.prathieshna.bookfinder.reducers.reducerHandler
+import lk.prathieshna.bookfinder.state.AppState
 import org.rekotlin.Store
 
-val appStore = Store(
-    reducer = ::appReducers,
+
+val bookFinderStore = Store(
+    reducer = getAppReducer(AppState(), reducerHandler),
     state = null,
-    middleware = listOf(NetworkMiddleware)
+    middleware = listOf(getNetworkMiddleware(middlewareHandler))
 )

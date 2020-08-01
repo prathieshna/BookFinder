@@ -12,7 +12,7 @@ import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.state.getVolumeAuthors
 import lk.prathieshna.bookfinder.state.getVolumeName
 import lk.prathieshna.bookfinder.state.getVolumeThumbnailImageURL
-import lk.prathieshna.bookfinder.store.appStore
+import lk.prathieshna.bookfinder.store.bookFinderStore
 import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
 
 
@@ -51,13 +51,14 @@ class BookSearchAdapter(
             this.searchItem = item
             this.itemIndex = position
 
-            itemView.tv_book_title.text = getVolumeName(appStore.state, position, context)
-            itemView.tv_book_author.text = getVolumeAuthors(appStore.state, position, context)
-            Picasso.get().load(getVolumeThumbnailImageURL(appStore.state, position))
+            itemView.tv_book_title.text = getVolumeName(bookFinderStore.state, position, context)
+            itemView.tv_book_author.text =
+                getVolumeAuthors(bookFinderStore.state, position, context)
+            Picasso.get().load(getVolumeThumbnailImageURL(bookFinderStore.state, position))
                 .into(itemView.iv_book_thumbnail)
             getDominantColorFromImageURL(
                 context,
-                getVolumeThumbnailImageURL(appStore.state, position)
+                getVolumeThumbnailImageURL(bookFinderStore.state, position)
             ) { dominantColor ->
                 itemView.tv_book_title.setTextColor(dominantColor)
             }

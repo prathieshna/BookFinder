@@ -1,15 +1,16 @@
 package lk.prathieshna.bookfinder.store
-
 import lk.prathieshna.bookfinder.actions.BaseAction
 import lk.prathieshna.bookfinder.actions.RemoveStateStatus
 import lk.prathieshna.bookfinder.state.ActionStatus
-import lk.prathieshna.bookfinder.state.AppState
+import lk.prathieshna.bookfinder.state.UdfBaseState
 import lk.prathieshna.bookfinder.state.getStateFlowStatusBySession
+import org.rekotlin.Store
+
 import org.rekotlin.StoreSubscriber
 import java.util.*
 
-interface Base : StoreSubscriber<AppState> {
-    val state: AppState
+interface Base<T> : StoreSubscriber<UdfBaseState<T>> {
+    val appStore: Store<UdfBaseState<T>>
     var actionSessionIds: ArrayList<String>
 
     fun getActionId(): String {
@@ -25,15 +26,16 @@ interface Base : StoreSubscriber<AppState> {
     }
 
     fun showLoader()
+
     fun hideLoader()
 
-    override fun newState(state: AppState) {
+    override fun newState(state: UdfBaseState<T>) {
         this.onRawStateUpdate(state)
         val ids: List<String> = this.actionSessionIds.toList()
         ids.forEach { updateActivity(state, it) }
     }
 
-    private fun updateActivity(state: AppState, actionId: String) {
+    private fun updateActivity(state: UdfBaseState<T>, actionId: String) {
         getStateFlowStatusBySession(state, actionId)?.let { action ->
             if (action.status == ActionStatus.COMPLETED) {
                 appStore.dispatch(RemoveStateStatus.Perform(actionId, getActionId()))
@@ -47,7 +49,7 @@ interface Base : StoreSubscriber<AppState> {
         }
     }
 
-    fun onStateUpdate(state: AppState, action: BaseAction): Boolean
-    fun onRawStateUpdate(state: AppState)
+    fun onStateUpdate(state: UdfBaseState<T>, action: BaseAction): Boolean
+    fun onRawStateUpdate(state: UdfBaseState<T>)
     fun onError(action: BaseAction)
 }

@@ -11,58 +11,63 @@ import lk.prathieshna.bookfinder.domain.local.VolumeInfo
 import org.rekotlin.StateType
 
 
-data class AppState(
-    val searchResult: SearchResult = SearchResult(),
-
+data class UdfBaseState<T>(
+    val state: T,
     val systemStateUpdateTracker: Map<String, BaseAction> = hashMapOf()
+
 ) : StateType
+
 
 enum class ActionStatus {
     INIT, COMPLETED, ERROR
 }
 
-val getStateFlowStatusBySession: (state: AppState, sessionId: String) -> BaseAction? =
-    { state, sessionId ->
-        state.systemStateUpdateTracker[sessionId]
-    }
 
-val getTotalItems: (state: AppState) -> Int =
-    { state -> state.searchResult.totalItems ?: 0 }
+fun <T> getStateFlowStatusBySession(state: UdfBaseState<T>, sessionId: String): BaseAction? {
+    return state.systemStateUpdateTracker[sessionId]
+}
 
-val getVolumes: (state: AppState) -> List<Item> =
-    { state -> state.searchResult.items?.map { it ?: Item() } ?: listOf() }
+data class AppState(
+    val searchResult: SearchResult = SearchResult()
+)
 
-val getVolume: (state: AppState, position: Int) -> Item =
-    { state, position -> state.searchResult.items?.get(position) ?: Item() }
+val getTotalItems: (state: UdfBaseState<AppState>) -> Int =
+    { state -> state.state.searchResult.totalItems ?: 0 }
 
-val getVolumeInfo: (state: AppState, position: Int) -> VolumeInfo =
+val getVolumes: (state: UdfBaseState<AppState>) -> List<Item> =
+    { state -> state.state.searchResult.items?.map { it ?: Item() } ?: listOf() }
+
+val getVolume: (state: UdfBaseState<AppState>, position: Int) -> Item =
+    { state, position -> state.state.searchResult.items?.get(position) ?: Item() }
+
+val getVolumeInfo: (state: UdfBaseState<AppState>, position: Int) -> VolumeInfo =
     { state, position -> getVolume(state, position).volumeInfo ?: VolumeInfo() }
 
-val getVolumeImageLinks: (state: AppState, position: Int) -> ImageLinks =
+val getVolumeImageLinks: (state: UdfBaseState<AppState>, position: Int) -> ImageLinks =
     { state, position -> getVolumeInfo(state, position).imageLinks ?: ImageLinks() }
 
-val getVolumeName: (state: AppState, position: Int, context: Context) -> String =
+val getVolumeName: (state: UdfBaseState<AppState>, position: Int, context: Context) -> String =
     { state, position, context ->
         val title = getVolumeInfo(state, position).title
         if (title != null && title.isNotEmpty() && title.isNotBlank()) title
         else context.getString(R.string.not_available)
     }
 
-val getVolumeDescription: (state: AppState, position: Int, context: Context) -> String =
+val getVolumeDescription: (state: UdfBaseState<AppState>, position: Int, context: Context) -> String =
     { state, position, context ->
         val description = getVolumeInfo(state, position).description
         if (description != null && description.isNotEmpty() && description.isNotBlank()) description
         else context.getString(R.string.not_available)
     }
 
-val getVolumeThumbnailImageURL: (state: AppState, position: Int) -> String =
+val getVolumeThumbnailImageURL: (state: UdfBaseState<AppState>, position: Int) -> String =
     { state, position ->
         val thumbnail = getVolumeImageLinks(state, position).thumbnail
         if (thumbnail != null && thumbnail.isNotEmpty() && thumbnail.isNotBlank()) thumbnail
         else DEFAULT_IMAGE_URL
     }
 
-val getVolumeAuthors: (state: AppState, position: Int, context: Context) -> String =
+val getVolumeAuthors: (state: UdfBaseState<AppState>, position: Int, context: Context) -> String =
     { state, position, context ->
         val authors = getVolumeInfo(state, position).authors
         var string = ""
