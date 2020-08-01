@@ -25,6 +25,11 @@ fun getVolumesBySearchReducer(action: Action, state: AppState): AppState {
                 localState, action.getId(), GetVolumesBySearch.Success(action.getId())
             )
         }
+        is GetVolumesBySearch.Failure -> {
+            return updateActionsStateStatus(
+                state, action.getId(), GetVolumesBySearch.Failure(action.error, action.getId())
+            )
+        }
     }
     return state
 }

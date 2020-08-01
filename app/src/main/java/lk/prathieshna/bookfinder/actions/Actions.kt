@@ -32,7 +32,7 @@ sealed class GetVolumesBySearch(
     class Success(actionId: String?) :
         GetVolumesBySearch(baseId = actionId, actionStatus = ActionStatus.COMPLETED)
 
-    class Failure(actionError: ApiError, actionId: String?) : GetVolumesBySearch(
+    class Failure(actionError: ApiError?, actionId: String?) : GetVolumesBySearch(
         baseId = actionId,
         actionStatus = ActionStatus.ERROR,
         error = actionError

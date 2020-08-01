@@ -49,7 +49,7 @@ fun getVolumesBySearch(dispatch: DispatchFunction, action: GetVolumesBySearch.Re
 
         override fun onFailure(call: Call<ApiSearchResult>?, t: Throwable?) {
             val apiError = ApiError(
-                500.toString(),
+                500,
                 t?.message ?: action.context.getString(R.string.unexpected_error)
             )
             throwError(apiError)

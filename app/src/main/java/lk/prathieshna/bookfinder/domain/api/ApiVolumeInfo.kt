@@ -1,8 +1,6 @@
 package lk.prathieshna.bookfinder.domain.api
 
 import com.google.gson.annotations.SerializedName
-import lk.prathieshna.bookfinder.domain.local.ImageLinks
-import lk.prathieshna.bookfinder.domain.local.ReadingMode
 import lk.prathieshna.bookfinder.domain.local.VolumeInfo
 
 class ApiVolumeInfo {
@@ -77,7 +75,7 @@ class ApiVolumeInfo {
             publisher = publisher,
             publishedDate = publishedDate,
             description = description,
-            readingModes = readingModes?.mapToLocal() ?: ReadingMode(),
+            readingModes = readingModes?.mapToLocal(),
             pageCount = pageCount,
             printedPageCount = printedPageCount,
             averageRating = averageRating,
@@ -87,7 +85,7 @@ class ApiVolumeInfo {
             maturityRating = maturityRating,
             allowAnonLogging = allowAnonLogging,
             contentVersion = contentVersion,
-            imageLinks = imageLinks?.mapToLocal() ?: ImageLinks(),
+            imageLinks = imageLinks?.mapToLocal(),
             language = language,
             previewLink = previewLink,
             infoLink = infoLink,

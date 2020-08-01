@@ -2,8 +2,6 @@ package lk.prathieshna.bookfinder.domain.api
 
 import com.google.gson.annotations.SerializedName
 import lk.prathieshna.bookfinder.domain.local.AccessInfo
-import lk.prathieshna.bookfinder.domain.local.EPub
-import lk.prathieshna.bookfinder.domain.local.PDF
 
 class ApiAccessInfo {
     @SerializedName("country")
@@ -43,8 +41,8 @@ class ApiAccessInfo {
             embeddable = embeddable,
             publicDomain = publicDomain,
             textToSpeechPermission = textToSpeechPermission,
-            ePub = ePub?.mapToLocal() ?: EPub(),
-            pdf = pdf?.mapToLocal() ?: PDF(),
+            ePub = ePub?.mapToLocal(),
+            pdf = pdf?.mapToLocal(),
             webReaderLink = webReaderLink,
             accessViewStatus = accessViewStatus,
             quoteSharingAllowed = quoteSharingAllowed

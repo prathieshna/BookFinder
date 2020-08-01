@@ -28,6 +28,7 @@ interface Base : StoreSubscriber<AppState> {
     fun hideLoader()
 
     override fun newState(state: AppState) {
+        this.onRawStateUpdate(state)
         val ids: List<String> = this.actionSessionIds.toList()
         ids.forEach { updateActivity(state, it) }
     }
@@ -35,17 +36,18 @@ interface Base : StoreSubscriber<AppState> {
     private fun updateActivity(state: AppState, actionId: String) {
         getStateFlowStatusBySession(state, actionId)?.let { action ->
             if (action.status == ActionStatus.COMPLETED) {
+                appStore.dispatch(RemoveStateStatus.Perform(actionId, getActionId()))
                 if (onStateUpdate(state, action))
                     hideLoader()
-                appStore.dispatch(RemoveStateStatus.Perform(actionId, getActionId()))
             } else if (action.status == ActionStatus.ERROR) {
+                appStore.dispatch(RemoveStateStatus.Perform(actionId, getActionId()))
                 onError(action)
                 hideLoader()
-                appStore.dispatch(RemoveStateStatus.Perform(actionId, getActionId()))
             }
         }
     }
 
     fun onStateUpdate(state: AppState, action: BaseAction): Boolean
+    fun onRawStateUpdate(state: AppState)
     fun onError(action: BaseAction)
 }

@@ -1,7 +1,8 @@
-package com.android.android.udf.activities
+package lk.prathieshna.bookfinder.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import lk.prathieshna.bookfinder.dialogs.AlertDialog
 import lk.prathieshna.bookfinder.dialogs.LoaderDialog
 import lk.prathieshna.bookfinder.store.Base
 import lk.prathieshna.bookfinder.store.appStore
@@ -11,11 +12,13 @@ abstract class BaseActivity : AppCompatActivity(), Base {
 
     override val state = appStore.state
     private lateinit var loaderDialog: LoaderDialog
+    lateinit var alertDialog: AlertDialog
     override var actionSessionIds: ArrayList<String> = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loaderDialog = LoaderDialog(this)
+        alertDialog = AlertDialog(this)
     }
 
     override fun hideLoader() {

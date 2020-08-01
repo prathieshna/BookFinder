@@ -1,10 +1,7 @@
 package lk.prathieshna.bookfinder.domain.api
 
 import com.google.gson.annotations.SerializedName
-import lk.prathieshna.bookfinder.domain.local.AccessInfo
 import lk.prathieshna.bookfinder.domain.local.Item
-import lk.prathieshna.bookfinder.domain.local.SaleInfo
-import lk.prathieshna.bookfinder.domain.local.VolumeInfo
 
 class ApiItem {
     @SerializedName("kind")
@@ -34,9 +31,9 @@ class ApiItem {
             id = id,
             eTag = eTag,
             selfLink = selfLink,
-            volumeInfo = volumeInfo?.mapToLocal() ?: VolumeInfo(),
-            saleInfo = saleInfo?.mapToLocal() ?: SaleInfo(),
-            accessInfo = accessInfo?.mapToLocal() ?: AccessInfo()
+            volumeInfo = volumeInfo?.mapToLocal(),
+            saleInfo = saleInfo?.mapToLocal(),
+            accessInfo = accessInfo?.mapToLocal()
         )
     }
 }

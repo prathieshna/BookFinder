@@ -1,7 +1,6 @@
 package lk.prathieshna.bookfinder.domain.api
 
 import com.google.gson.annotations.SerializedName
-import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.domain.local.SearchResult
 
 class ApiSearchResult {
@@ -18,7 +17,7 @@ class ApiSearchResult {
         return SearchResult(
             kind = kind,
             totalItems = totalItems,
-            items = items?.map { it?.mapToLocal() ?: Item() } ?: listOf()
+            items = items?.map { it?.mapToLocal() }
         )
     }
 }

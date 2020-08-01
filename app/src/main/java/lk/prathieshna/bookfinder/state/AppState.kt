@@ -26,6 +26,9 @@ val getStateFlowStatusBySession: (state: AppState, sessionId: String) -> BaseAct
         state.systemStateUpdateTracker[sessionId]
     }
 
+val getTotalItems: (state: AppState) -> Int =
+    { state -> state.searchResult.totalItems ?: 0 }
+
 val getVolumes: (state: AppState) -> List<Item> =
     { state -> state.searchResult.items?.map { it ?: Item() } ?: listOf() }
 
@@ -66,7 +69,7 @@ val getVolumeAuthors: (state: AppState, position: Int, context: Context) -> Stri
         if (authors != null && authors.isNotEmpty()) {
             authors.forEach { string = "$string $it" }
             if (string.isNotEmpty() && string.isNotBlank()) {
-                string
+                string.trim()
             } else {
                 context.getString(R.string.not_available)
             }

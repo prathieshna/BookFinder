@@ -6,4 +6,7 @@
     <string name="unauthorized">Unauthorized</string>
     <string name="search">Search</string>
     <string name="search_here">Search for a book here</string>
+    <string name="thumbnail_description">Thumbnail image of the book cover</string>
+    <string name="alert">Alert</string>
+    <string name="ok">OK</string>
 </resources>
