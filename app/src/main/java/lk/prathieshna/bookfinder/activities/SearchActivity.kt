@@ -1,6 +1,8 @@
 package lk.prathieshna.bookfinder.activities
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.android.synthetic.main.activity_search.*
@@ -12,7 +14,9 @@ import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.middleware.utils.getLastVisibleItem
 import lk.prathieshna.bookfinder.state.AppState
 import lk.prathieshna.bookfinder.state.UdfBaseState
+import lk.prathieshna.bookfinder.state.getTotalItems
 import lk.prathieshna.bookfinder.state.getVolumes
+import lk.prathieshna.bookfinder.store.bookFinderStore
 
 
 class SearchActivity : BaseActivity() {
@@ -27,10 +31,11 @@ class SearchActivity : BaseActivity() {
         return when (action) {
             is GetVolumesBySearch -> {
                 isEOL = searchResultItems.size == getVolumes(state).size
-                isLoading = false
                 searchResultItems.clear()
                 searchResultItems.addAll(getVolumes(state))
                 adapter.notifyDataSetChanged()
+                tv_results_meta_data.text = getTotalItems(bookFinderStore.state, this)
+                isLoading = false
                 true
             }
             else -> {
@@ -45,8 +50,8 @@ class SearchActivity : BaseActivity() {
     override fun onError(action: BaseAction) {
         when (action) {
             is GetVolumesBySearch -> {
-                isLoading = false
                 alertDialog.showDialog(action.error?.message ?: getString(R.string.not_available))
+                isLoading = false
             }
         }
     }
@@ -54,36 +59,23 @@ class SearchActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        setUpSearchButton()
+        setUpSearchTextWatcher()
+        setUpSearchResultsGrid()
+    }
 
-        gridLayoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+    private fun setUpSearchResultsGrid() {
+        gridLayoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
         rv_search_results.layoutManager = gridLayoutManager
         adapter = BookSearchAdapter(this, searchResultItems) {}
         rv_search_results.adapter = adapter
 
-        b_search.setOnClickListener {
-            isLoading = true
-            dispatchAction(
-                GetVolumesBySearch.Request(
-                    q = et_search.text.toString(),
-                    startIndex = 0,
-                    context = this,
-                    actionId = getActionId()
-                )
-            )
-        }
-
-        setRecyclerViewScrollListener()
-    }
-
-    private fun setRecyclerViewScrollListener() {
-
         rv_search_results.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val lastVisibleItemPosition: Int
                 val lastVisibleItemPositions = gridLayoutManager.findLastVisibleItemPositions(null)
                 lastVisibleItemPosition = getLastVisibleItem(lastVisibleItemPositions)
-                if (!isLoading && lastVisibleItemPosition + 5 > gridLayoutManager.itemCount && searchResultItems.size > 0 && !isEOL) {
+                if (!isLoading && lastVisibleItemPosition + 8 > gridLayoutManager.itemCount && searchResultItems.size > 0 && !isEOL) {
                     isLoading = true
                     dispatchAction(
                         GetVolumesBySearch.Request(
@@ -98,5 +90,46 @@ class SearchActivity : BaseActivity() {
         })
     }
 
+    private fun setUpSearchButton() {
+        b_search.setOnClickListener {
+            isLoading = true
+            dispatchAction(
+                GetVolumesBySearch.Request(
+                    q = et_search.text.toString(),
+                    startIndex = 0,
+                    context = this,
+                    actionId = getActionId()
+                )
+            )
+        }
+    }
 
+    private fun setUpSearchTextWatcher() {
+        et_search.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(currentText: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(
+                currentText: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun onTextChanged(
+                currentText: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+                tv_results_meta_data.text = ""
+                searchResultItems.clear()
+                adapter.notifyDataSetChanged()
+                isEOL = false
+            }
+        })
+    }
 }

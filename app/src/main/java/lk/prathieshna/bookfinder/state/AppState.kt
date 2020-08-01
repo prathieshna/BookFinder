@@ -28,17 +28,26 @@ fun <T> getStateFlowStatusBySession(state: UdfBaseState<T>, sessionId: String): 
 }
 
 data class AppState(
-    val searchResult: SearchResult = SearchResult()
+    val searchResult: SearchResult? = SearchResult()
 )
 
-val getTotalItems: (state: UdfBaseState<AppState>) -> Int =
-    { state -> state.state.searchResult.totalItems ?: 0 }
+val getTotalItems: (state: UdfBaseState<AppState>, context: Context) -> String =
+    { state, context ->
+        if (getSearchResult(state).totalItems != null && getSearchResult(state).totalItems ?: 0 > 0) {
+            context.getString(R.string.search_meta, getSearchResult(state).totalItems)
+        } else {
+            context.getString(R.string.search_meta_not_available)
+        }
+    }
+
+val getSearchResult: (state: UdfBaseState<AppState>) -> SearchResult =
+    { state -> state.state.searchResult ?: SearchResult() }
 
 val getVolumes: (state: UdfBaseState<AppState>) -> List<Item> =
-    { state -> state.state.searchResult.items?.map { it ?: Item() } ?: listOf() }
+    { state -> getSearchResult(state).items?.map { it ?: Item() } ?: listOf() }
 
 val getVolume: (state: UdfBaseState<AppState>, position: Int) -> Item =
-    { state, position -> state.state.searchResult.items?.get(position) ?: Item() }
+    { state, position -> getVolumes(state)[position] }
 
 val getVolumeInfo: (state: UdfBaseState<AppState>, position: Int) -> VolumeInfo =
     { state, position -> getVolume(state, position).volumeInfo ?: VolumeInfo() }

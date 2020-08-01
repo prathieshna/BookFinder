@@ -9,4 +9,6 @@
     <string name="thumbnail_description">Thumbnail image of the book cover</string>
     <string name="alert">Alert</string>
     <string name="ok">OK</string>
+    <string name="search_meta">We found %d more books for this query.</string>
+    <string name="search_meta_not_available">Sorry! No books available for this query.</string>
 </resources>
