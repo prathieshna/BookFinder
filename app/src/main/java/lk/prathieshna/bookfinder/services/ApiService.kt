@@ -2,10 +2,12 @@ package lk.prathieshna.bookfinder.services
 
 import lk.prathieshna.bookfinder.constant.Constants.Companion.GOOGLE_BOOKS_API_VERSION
 import lk.prathieshna.bookfinder.constant.Constants.Companion.GOOGLE_BOOKS_PAGE_SIZE
+import lk.prathieshna.bookfinder.domain.api.ApiItem
 import lk.prathieshna.bookfinder.domain.api.ApiSearchResult
 import lk.prathieshna.bookfinder.middleware.retrofit.RetrofitClient
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -19,6 +21,11 @@ interface ApiService {
         @Query("printType ") printType: String? = null,
         @Query("filter") filter: String? = null
     ): Call<ApiSearchResult>
+
+    @GET(GOOGLE_BOOKS_API_VERSION + "volumes/{id}")
+    fun getVolumesByID(
+        @Path("id") id: String
+    ): Call<ApiItem>
 }
 
 fun apiService(): ApiService {

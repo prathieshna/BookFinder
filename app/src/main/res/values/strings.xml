@@ -1,14 +1,26 @@
 <resources>
     <string name="app_name">Book Finder</string>
+
     <string name="loading">Loading</string>
+    <string name="alert">Alert</string>
+    <string name="ok">OK</string>
+
     <string name="not_available">Information is not available</string>
-    <string name="unexpected_error">Unexpected Error</string>
-    <string name="unauthorized">Unauthorized</string>
+
     <string name="search">Search</string>
     <string name="search_here">Search for a book here</string>
     <string name="thumbnail_description">Thumbnail image of the book cover</string>
-    <string name="alert">Alert</string>
-    <string name="ok">OK</string>
+
     <string name="search_meta">We found %d more books for this query.</string>
     <string name="search_meta_not_available">Sorry! No books available for this query.</string>
+
+    <string name="title_activity_item">ScrollingActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="unexpected_error">Unexpected Error</string>
+    <string name="unauthorized">Unauthorized</string>
+    <string name="fav_remove_sb_message">Book is removed from your favourites</string>
+    <string name="fav_added_sb_message">Book is added to your favourites</string>
+    <string name="undo">UNDO</string>
+    <string name="action_favorite">Favourites</string>
 </resources>

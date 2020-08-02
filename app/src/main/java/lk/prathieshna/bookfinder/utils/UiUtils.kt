@@ -2,6 +2,7 @@ package lk.prathieshna.bookfinder.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import com.squareup.picasso.Picasso
@@ -25,17 +26,12 @@ fun getDominantColorFromImageURL(context: Context, url: String, callback: (Int) 
                 }
             }
         } catch (e: Exception) {
-            callback(
-                ContextCompat.getColor(
-                    context,
-                    R.color.colorPrimaryDark
-                )
-            )
+            Log.e("getDominantColor", e.message ?: "Error Occurred")
         }
     }).start()
 }
 
-private fun darkenColour(dominantColor: Int, float: Float): Int {
+fun darkenColour(dominantColor: Int, float: Float): Int {
     val a: Int = Color.alpha(dominantColor)
     val r: Int = Color.red(dominantColor)
     val g: Int = Color.green(dominantColor)

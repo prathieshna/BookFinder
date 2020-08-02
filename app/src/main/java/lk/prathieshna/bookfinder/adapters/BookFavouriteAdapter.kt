@@ -6,25 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.layout_search_result_item.view.*
+import kotlinx.android.synthetic.main.layout_favourite_item.view.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.domain.local.Item
-import lk.prathieshna.bookfinder.state.projections.getVolumeAuthors
-import lk.prathieshna.bookfinder.state.projections.getVolumeName
-import lk.prathieshna.bookfinder.state.projections.getVolumeThumbnailImageURL
-import lk.prathieshna.bookfinder.store.bookFinderStore
 import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
 
 
-class BookSearchAdapter(
+class BookFavouriteAdapter(
     private val context: Context,
     val data: List<Item>,
     val clickHandler: (Item) -> Unit
-) : RecyclerView.Adapter<BookSearchAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<BookFavouriteAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
         val view =
-            LayoutInflater.from(context).inflate(R.layout.layout_search_result_item, p0, false)
+            LayoutInflater.from(context).inflate(R.layout.layout_favourite_item, p0, false)
         return ViewHolder(view)
     }
 
@@ -38,31 +34,30 @@ class BookSearchAdapter(
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var searchItem: Item? = null
+        private var favouriteItem: Item? = null
         private var itemIndex: Int = 0
 
         init {
             itemView.setOnClickListener {
-                clickHandler(searchItem ?: Item())
+                clickHandler(favouriteItem ?: Item())
             }
         }
 
         fun setData(item: Item?, position: Int) {
-            this.searchItem = item
+            this.favouriteItem = item
             this.itemIndex = position
 
-            itemView.tv_book_title.text = getVolumeName(bookFinderStore.state, position, context)
-            itemView.tv_book_author.text =
-                getVolumeAuthors(bookFinderStore.state, position, context)
-            Picasso.get().load(getVolumeThumbnailImageURL(bookFinderStore.state, position))
+            itemView.tv_book_title.text = favouriteItem?.volumeInfo?.title
+            itemView.tv_book_subtitle.text = favouriteItem?.volumeInfo?.subtitle
+            itemView.tv_book_author.text = favouriteItem?.volumeInfo?.authors?.get(0)
+            Picasso.get().load(favouriteItem?.volumeInfo?.imageLinks?.thumbnail)
                 .into(itemView.iv_book_thumbnail)
             getDominantColorFromImageURL(
                 context,
-                getVolumeThumbnailImageURL(bookFinderStore.state, position)
+                favouriteItem?.volumeInfo?.imageLinks?.thumbnail!!
             ) { dominantColor ->
                 itemView.tv_book_title.setTextColor(dominantColor)
             }
         }
     }
-
 }

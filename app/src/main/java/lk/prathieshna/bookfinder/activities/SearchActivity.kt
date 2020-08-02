@@ -1,21 +1,26 @@
 package lk.prathieshna.bookfinder.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.android.synthetic.main.activity_search.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.actions.BaseAction
+import lk.prathieshna.bookfinder.actions.GetVolumeByID
 import lk.prathieshna.bookfinder.actions.GetVolumesBySearch
 import lk.prathieshna.bookfinder.adapters.BookSearchAdapter
 import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.middleware.utils.getLastVisibleItem
 import lk.prathieshna.bookfinder.state.AppState
 import lk.prathieshna.bookfinder.state.UdfBaseState
-import lk.prathieshna.bookfinder.state.getTotalItems
-import lk.prathieshna.bookfinder.state.getVolumes
+import lk.prathieshna.bookfinder.state.projections.getTotalItems
+import lk.prathieshna.bookfinder.state.projections.getVolumes
 import lk.prathieshna.bookfinder.store.bookFinderStore
 
 
@@ -38,8 +43,32 @@ class SearchActivity : BaseActivity() {
                 isLoading = false
                 true
             }
+            is GetVolumeByID -> {
+                val intent = Intent(this, ItemActivity::class.java)
+                startActivity(intent)
+                true
+            }
             else -> {
                 false
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_item, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_favorite -> {
+                val intent = Intent(this, FavouritesActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
     }
@@ -52,6 +81,9 @@ class SearchActivity : BaseActivity() {
             is GetVolumesBySearch -> {
                 alertDialog.showDialog(action.error?.message ?: getString(R.string.not_available))
                 isLoading = false
+            }
+            is GetVolumeByID -> {
+                alertDialog.showDialog(action.error?.message ?: getString(R.string.not_available))
             }
         }
     }
@@ -67,7 +99,15 @@ class SearchActivity : BaseActivity() {
     private fun setUpSearchResultsGrid() {
         gridLayoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
         rv_search_results.layoutManager = gridLayoutManager
-        adapter = BookSearchAdapter(this, searchResultItems) {}
+        adapter = BookSearchAdapter(this, searchResultItems) { selectedItem ->
+            dispatchAction(
+                GetVolumeByID.Request(
+                    id = selectedItem.id ?: "",
+                    actionId = getActionId(),
+                    context = this
+                )
+            )
+        }
         rv_search_results.adapter = adapter
 
         rv_search_results.addOnScrollListener(object : RecyclerView.OnScrollListener() {

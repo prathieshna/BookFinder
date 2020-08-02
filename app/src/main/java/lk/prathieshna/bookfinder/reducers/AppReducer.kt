@@ -1,9 +1,7 @@
 package lk.prathieshna.bookfinder.reducers
 
 import lk.prathieshna.bookfinder.actions.BaseAction
-import lk.prathieshna.bookfinder.actions.GetVolumesBySearch
 import lk.prathieshna.bookfinder.actions.RemoveStateStatus
-import lk.prathieshna.bookfinder.state.AppState
 import lk.prathieshna.bookfinder.state.UdfBaseState
 import org.rekotlin.Action
 import org.rekotlin.Reducer
@@ -46,11 +44,3 @@ fun <T> getAppReducer(stateInstance: T, handler: ReducerHandler<T>): Reducer<Udf
     }
 }
 
-val reducerHandler: ReducerHandler<AppState> = { action: Action, appState: UdfBaseState<AppState> ->
-    when (action) {
-        is GetVolumesBySearch -> {
-            getVolumesBySearchReducer(action, appState)
-        }
-        else -> appState
-    }
-}

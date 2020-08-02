@@ -3,6 +3,7 @@ package lk.prathieshna.bookfinder.actions
 import android.content.Context
 import lk.prathieshna.bookfinder.constant.Constants.Companion.GOOGLE_BOOKS_PAGE_SIZE
 import lk.prathieshna.bookfinder.domain.local.ApiError
+import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.domain.local.SearchResult
 import lk.prathieshna.bookfinder.state.ActionStatus
 
@@ -33,6 +34,32 @@ sealed class GetVolumesBySearch(
         GetVolumesBySearch(baseId = actionId, actionStatus = ActionStatus.COMPLETED)
 
     class Failure(actionError: ApiError?, actionId: String?) : GetVolumesBySearch(
+        baseId = actionId,
+        actionStatus = ActionStatus.ERROR,
+        error = actionError
+    )
+}
+
+sealed class GetVolumeByID(
+    baseId: String? = "",
+    actionStatus: ActionStatus? = ActionStatus.INIT,
+    error: ApiError? = null
+) : BaseAction(baseId, actionStatus, error) {
+    class Request(
+        val id: String,
+        val context: Context,
+        actionId: String?
+    ) : GetVolumeByID(baseId = actionId)
+
+    class Perform(
+        val selectedItem: Item,
+        actionId: String?
+    ) : GetVolumeByID(baseId = actionId)
+
+    class Success(actionId: String?) :
+        GetVolumeByID(baseId = actionId, actionStatus = ActionStatus.COMPLETED)
+
+    class Failure(actionError: ApiError?, actionId: String?) : GetVolumeByID(
         baseId = actionId,
         actionStatus = ActionStatus.ERROR,
         error = actionError

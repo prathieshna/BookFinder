@@ -4,7 +4,7 @@ import lk.prathieshna.bookfinder.actions.GetVolumesBySearch
 import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.state.AppState
 import lk.prathieshna.bookfinder.state.UdfBaseState
-import lk.prathieshna.bookfinder.state.getVolumes
+import lk.prathieshna.bookfinder.state.projections.getVolumes
 import org.rekotlin.Action
 
 fun getVolumesBySearchReducer(
