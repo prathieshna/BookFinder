@@ -15,8 +15,8 @@ import lk.prathieshna.bookfinder.utils.DatabaseHandler
 
 class FavouritesActivity : BaseActivity() {
     private var favouriteItems: MutableList<Item> = mutableListOf()
-    lateinit var databaseHandler: DatabaseHandler
-    lateinit var adapter: BookFavouriteAdapter
+    private lateinit var databaseHandler: DatabaseHandler
+    private lateinit var adapter: BookFavouriteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

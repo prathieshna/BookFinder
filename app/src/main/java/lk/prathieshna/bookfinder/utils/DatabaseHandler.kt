@@ -62,7 +62,7 @@ class DatabaseHandler(val context: Context) :
         var cursor: Cursor? = null
         return try {
             cursor = db.rawQuery(selectQuery, null)
-            val list: ArrayList<Item> = ArrayList<Item>()
+            val list: ArrayList<Item> = ArrayList()
             if (cursor.moveToFirst()) {
                 do {
                     val id = cursor.getString(cursor.getColumnIndex(KEY_ID))
