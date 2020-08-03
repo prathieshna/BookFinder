@@ -25,39 +25,39 @@ val getTotalItems: (state: UdfBaseState<AppState>, context: Context) -> String =
         }
     }
 
-val getVolume: (state: UdfBaseState<AppState>, position: Int) -> Item =
-    { state, position -> getVolumes(state)[position] }
+val getVolume: (state: UdfBaseState<AppState>, id: String) -> Item =
+    { state, id -> getVolumes(state).first { it.id == id } }
 
-val getVolumeInfo: (state: UdfBaseState<AppState>, position: Int) -> VolumeInfo =
-    { state, position -> getVolume(state, position).volumeInfo ?: VolumeInfo() }
+val getVolumeInfo: (state: UdfBaseState<AppState>, id: String) -> VolumeInfo =
+    { state, id -> getVolume(state, id).volumeInfo ?: VolumeInfo() }
 
-val getVolumeImageLinks: (state: UdfBaseState<AppState>, position: Int) -> ImageLinks =
-    { state, position -> getVolumeInfo(state, position).imageLinks ?: ImageLinks() }
+val getVolumeImageLinks: (state: UdfBaseState<AppState>, id: String) -> ImageLinks =
+    { state, id -> getVolumeInfo(state, id).imageLinks ?: ImageLinks() }
 
-val getVolumeName: (state: UdfBaseState<AppState>, position: Int, context: Context) -> String =
-    { state, position, context ->
-        val title = getVolumeInfo(state, position).title
+val getVolumeName: (state: UdfBaseState<AppState>, id: String, context: Context) -> String =
+    { state, id, context ->
+        val title = getVolumeInfo(state, id).title
         if (title != null && title.isNotEmpty() && title.isNotBlank()) title
         else context.getString(R.string.not_available)
     }
 
-val getVolumeDescription: (state: UdfBaseState<AppState>, position: Int, context: Context) -> String =
-    { state, position, context ->
-        val description = getVolumeInfo(state, position).description
+val getVolumeDescription: (state: UdfBaseState<AppState>, id: String, context: Context) -> String =
+    { state, id, context ->
+        val description = getVolumeInfo(state, id).description
         if (description != null && description.isNotEmpty() && description.isNotBlank()) description
         else context.getString(R.string.not_available)
     }
 
-val getVolumeThumbnailImageURL: (state: UdfBaseState<AppState>, position: Int) -> String =
-    { state, position ->
-        val thumbnail = getVolumeImageLinks(state, position).thumbnail
+val getVolumeThumbnailImageURL: (state: UdfBaseState<AppState>, id: String) -> String =
+    { state, id ->
+        val thumbnail = getVolumeImageLinks(state, id).thumbnail
         if (thumbnail != null && thumbnail.isNotEmpty() && thumbnail.isNotBlank()) thumbnail
         else Constants.DEFAULT_IMAGE_URL
     }
 
-val getVolumeAuthors: (state: UdfBaseState<AppState>, position: Int, context: Context) -> String =
-    { state, position, context ->
-        val authors = getVolumeInfo(state, position).authors
+val getVolumeAuthors: (state: UdfBaseState<AppState>, id: String, context: Context) -> String =
+    { state, id, context ->
+        val authors = getVolumeInfo(state, id).authors
         var string = ""
         if (authors != null && authors.isNotEmpty()) {
             authors.forEach { string = "$string $it" }
