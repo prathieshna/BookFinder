@@ -11,7 +11,7 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_PG
+import com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_UNSPECIFIED
 import com.google.android.gms.ads.formats.UnifiedNativeAd
 import kotlinx.android.synthetic.main.activity_search.*
 import lk.prathieshna.bookfinder.R
@@ -103,7 +103,7 @@ class SearchActivity : BaseActivity() {
 
         val conf = RequestConfiguration.Builder()
             .setMaxAdContentRating(
-                MAX_AD_CONTENT_RATING_PG
+                MAX_AD_CONTENT_RATING_UNSPECIFIED
             )
             .build()
 

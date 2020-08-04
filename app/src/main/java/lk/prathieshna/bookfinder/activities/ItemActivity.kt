@@ -23,7 +23,6 @@ import lk.prathieshna.bookfinder.store.bookFinderStore
 import lk.prathieshna.bookfinder.utils.DatabaseHandler
 import lk.prathieshna.bookfinder.utils.darkenColour
 import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
-import java.util.*
 
 
 class ItemActivity : BaseActivity() {
@@ -59,7 +58,6 @@ class ItemActivity : BaseActivity() {
         // to get test ads on this device."
         MobileAds.setRequestConfiguration(
             RequestConfiguration.Builder()
-                .setTestDeviceIds(Arrays.asList("ABCDEF012345"))
                 .build()
         )
 
