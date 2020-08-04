@@ -21,7 +21,13 @@
     <string name="action_favorite">Favourites</string>
     <string name="ad">Ad</string>
 
-    <string name="ad_unit_id_search">ca-app-pub-3940256099942544/8135179316</string>
-    <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/8135179316</string>
-    <!--    <string name="ad_unit_id">ca-app-pub-3403694871866608/6994030093</string>-->
+    <string name="ad_unit_id_search">ca-app-pub-3403694871866608/6994030093</string>
+    <string name="ad_unit_id_favourites">ca-app-pub-3403694871866608/1243720404</string>
+    <string name="ad_unit_id_detail_page_2">ca-app-pub-3403694871866608/1238198584</string>
+    <string name="ad_unit_id_detail_page_1">ca-app-pub-3403694871866608/8605552711</string>
+
+    <!--        <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>-->
+    <!--        <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>-->
+    <!--        <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--        <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>-->
 </resources>

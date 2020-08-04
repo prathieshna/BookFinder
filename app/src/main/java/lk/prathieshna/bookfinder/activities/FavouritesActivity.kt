@@ -86,7 +86,7 @@ class FavouritesActivity : BaseActivity() {
         const val NUMBER_OF_ADS = 1
     }
 
-    //Admob Integration
+    // AdMob Integration
     // The AdLoader used to load ads.
     private var adLoader: AdLoader? = null
 

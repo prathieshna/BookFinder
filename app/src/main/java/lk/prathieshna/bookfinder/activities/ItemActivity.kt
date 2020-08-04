@@ -5,8 +5,10 @@ import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
@@ -21,10 +23,19 @@ import lk.prathieshna.bookfinder.store.bookFinderStore
 import lk.prathieshna.bookfinder.utils.DatabaseHandler
 import lk.prathieshna.bookfinder.utils.darkenColour
 import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
+import java.util.*
+
 
 class ItemActivity : BaseActivity() {
+    private lateinit var adView: AdView
+    private lateinit var adView2: AdView
     private var isFavourite = false
     private lateinit var databaseHandler: DatabaseHandler
+
+    private var initialLayoutComplete = false
+    private var initialLayoutComplete2 = false
+    // Determine the screen width (less decorations) to use for the ad width.
+    // If the ad hasn't been laid out, default to the full screen width.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +48,40 @@ class ItemActivity : BaseActivity() {
         setUpFab()
         animateHeaderColor()
         setUpHeaders()
+
+
+        // Initialize the Mobile Ads SDK.
+        MobileAds.initialize(this) { }
+
+        // Set your test devices. Check your logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
+        // to get test ads on this device."
+        MobileAds.setRequestConfiguration(
+            RequestConfiguration.Builder()
+                .setTestDeviceIds(Arrays.asList("ABCDEF012345"))
+                .build()
+        )
+
+        adView = AdView(this)
+        adView2 = AdView(this)
+        ad_view_container.addView(adView)
+        ad_view_container_2.addView(adView2)
+        // Since we're loading the banner based on the adContainerView size, we need to wait until this
+        // view is laid out before we can get the width.
+        ad_view_container.viewTreeObserver.addOnGlobalLayoutListener {
+            if (!initialLayoutComplete) {
+                initialLayoutComplete = true
+                loadBanner()
+            }
+        }
+
+        ad_view_container_2.viewTreeObserver.addOnGlobalLayoutListener {
+            if (!initialLayoutComplete2) {
+                initialLayoutComplete2 = true
+                loadBanner2()
+            }
+        }
     }
 
     private fun setUpHeaders() {
@@ -134,6 +179,8 @@ class ItemActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         checkFavouriteStatus(databaseHandler)
+        adView.resume()
+        adView2.resume()
     }
 
     private fun checkFavouriteStatus(databaseHandler: DatabaseHandler) {
@@ -152,5 +199,90 @@ class ItemActivity : BaseActivity() {
     }
 
     override fun onError(action: BaseAction) {
+    }
+
+    private val adSize: AdSize
+        get() {
+            @Suppress("DEPRECATION") val display =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    this.display
+                } else {
+                    windowManager.defaultDisplay
+                }
+
+            val outMetrics = DisplayMetrics()
+            display?.getMetrics(outMetrics)
+
+            val density = outMetrics.density
+
+            var adWidthPixels = ad_view_container.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getPortraitAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
+
+    private val adSize2: AdSize
+        get() {
+            @Suppress("DEPRECATION") val display =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    this.display
+                } else {
+                    windowManager.defaultDisplay
+                }
+
+            val outMetrics = DisplayMetrics()
+            display?.getMetrics(outMetrics)
+
+            val density = outMetrics.density
+
+            var adWidthPixels = ad_view_container_2.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getPortraitAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
+
+
+    private fun loadBanner() {
+        adView.adUnitId = getString(R.string.ad_unit_id_detail_page_1)
+
+        adView.adSize = adSize
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
+    }
+
+    private fun loadBanner2() {
+        adView2.adUnitId = getString(R.string.ad_unit_id_detail_page_2)
+
+        adView2.adSize = adSize2
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView2.loadAd(adRequest)
+    }
+
+    /** Called when leaving the activity  */
+    public override fun onPause() {
+        adView.pause()
+        adView2.pause()
+        super.onPause()
+    }
+
+    /** Called before the activity is destroyed  */
+    public override fun onDestroy() {
+        adView.destroy()
+        adView2.destroy()
+        super.onDestroy()
     }
 }
