@@ -116,7 +116,7 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun setUpSearchResultsGrid() {
-        gridLayoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
+        gridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rv_search_results.layoutManager = gridLayoutManager
         adapter = BookSearchAdapter(this, searchResultItems) { selectedItem ->
             dispatchAction(
@@ -134,7 +134,7 @@ class SearchActivity : BaseActivity() {
                 val lastVisibleItemPosition: Int
                 val lastVisibleItemPositions = gridLayoutManager.findLastVisibleItemPositions(null)
                 lastVisibleItemPosition = getLastVisibleItem(lastVisibleItemPositions)
-                if (!isLoading && lastVisibleItemPosition + 8 > gridLayoutManager.itemCount && searchResultItems.size > 0 && !isEOL) {
+                if (!isLoading && lastVisibleItemPosition + 5 > gridLayoutManager.itemCount && searchResultItems.size > 0 && !isEOL) {
                     isLoading = true
                     dispatchAction(
                         GetVolumesBySearch.Request(
@@ -212,7 +212,7 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun loadNativeAds() {
-        val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id))
+        val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_search))
         adLoader =
             builder.forUnifiedNativeAd { unifiedNativeAd -> // A native ad loaded successfully, check if the ad loader has finished loading
                 // and if so, insert the ads into the list.

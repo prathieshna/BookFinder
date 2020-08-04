@@ -7,10 +7,10 @@ import com.google.android.gms.ads.formats.UnifiedNativeAdView
 import lk.prathieshna.bookfinder.R
 
 
-class UnifiedNativeAdViewHolder internal constructor(view: View) :
+class UnifiedNativeAdViewHolderSearch internal constructor(view: View) :
     RecyclerView.ViewHolder(view) {
     private val adView: UnifiedNativeAdView =
-        view.findViewById<View>(R.id.ad_view) as UnifiedNativeAdView
+        view.findViewById<View>(R.id.ad_view_search) as UnifiedNativeAdView
 
     init {
         adView.mediaView = adView.findViewById<View>(R.id.ad_media) as MediaView

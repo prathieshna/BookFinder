@@ -35,7 +35,7 @@ class BookSearchAdapter(
                     R.layout.ad_unified_search,
                     viewGroup, false
                 )
-                UnifiedNativeAdViewHolder(unifiedNativeLayoutView)
+                UnifiedNativeAdViewHolderSearch(unifiedNativeLayoutView)
             }
             ITEM_VIEW_TYPE -> {
                 val menuItemLayoutView: View =
@@ -104,7 +104,10 @@ class BookSearchAdapter(
         when (getItemViewType(position)) {
             UNIFIED_NATIVE_AD_VIEW_TYPE -> {
                 val nativeAd = data[position] as UnifiedNativeAd
-                populateNativeAdView(nativeAd, (holder as UnifiedNativeAdViewHolder).getAdView())
+                populateNativeAdView(
+                    nativeAd,
+                    (holder as UnifiedNativeAdViewHolderSearch).getAdView()
+                )
             }
             ITEM_VIEW_TYPE -> {
                 val item = data[position] as Item

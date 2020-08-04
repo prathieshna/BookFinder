@@ -19,7 +19,9 @@
     <string name="fav_added_sb_message">Book is added to your favourites</string>
     <string name="undo">UNDO</string>
     <string name="action_favorite">Favourites</string>
-    <string name="ad">Advertisement</string>
+    <string name="ad">Ad</string>
 
-    <string name="ad_unit_id">ca-app-pub-3940256099942544/8135179316</string>
+    <string name="ad_unit_id_search">ca-app-pub-3940256099942544/8135179316</string>
+    <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/8135179316</string>
+    <!--    <string name="ad_unit_id">ca-app-pub-3403694871866608/6994030093</string>-->
 </resources>
