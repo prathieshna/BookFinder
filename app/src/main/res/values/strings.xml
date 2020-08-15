@@ -21,13 +21,22 @@
     <string name="action_favorite">Favourites</string>
     <string name="ad">Ad</string>
 
-    <string name="ad_unit_id_search">ca-app-pub-3403694871866608/6994030093</string>
-    <string name="ad_unit_id_favourites">ca-app-pub-3403694871866608/1243720404</string>
-    <string name="ad_unit_id_detail_page_2">ca-app-pub-3403694871866608/1238198584</string>
-    <string name="ad_unit_id_detail_page_1">ca-app-pub-3403694871866608/8605552711</string>
 
-    <!--            <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>-->
-    <!--            <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>-->
-    <!--            <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--            <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>-->
+    <string name="embedded_url" translatable="false">https://books.google.lk/books?id=%1$s&#38;lpg=PP1&#38;pg=PP1&#38;output=embed</string>
+
+    <!--    <string translatable="false" name="ad_unit_id_search">ca-app-pub-3403694871866608/6994030093</string>-->
+    <!--    <string translatable="false" name="ad_unit_id_favourites">ca-app-pub-3403694871866608/1243720404</string>-->
+    <!--    <string translatable="false" name="ad_unit_id_detail_page_2">ca-app-pub-3403694871866608/1238198584</string>-->
+    <!--    <string translatable="false" name="ad_unit_id_detail_page_1">ca-app-pub-3403694871866608/8605552711</string>-->
+    <!--    <string translatable="false" name="ad_unit_id_reader_page">ca-app-pub-3403694871866608/2005012009</string>-->
+    <string name="full_preview">FULL PREVIEW</string>
+    <string name="partial_preview">PARTIAL PREVIEW</string>
+    <string name="no_preview">NO PREVIEW AVAILABLE</string>
+    <string name="social_message">Support the publisher by buying the book!</string>
+
+    <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>
+    <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ad_unit_id_reader_page">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

@@ -13,6 +13,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_UNSPECIFIED
 import com.google.android.gms.ads.formats.UnifiedNativeAd
+import com.google.android.ump.ConsentForm
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import kotlinx.android.synthetic.main.activity_search.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.actions.BaseAction
@@ -28,6 +32,9 @@ import lk.prathieshna.bookfinder.store.bookFinderStore
 
 
 class SearchActivity : BaseActivity() {
+
+    private var consentInformation: ConsentInformation? = null
+    private var consentForm: ConsentForm? = null
 
     // The AdLoader used to load ads.
     private var adLoader: AdLoader? = null
@@ -100,6 +107,23 @@ class SearchActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        val params = ConsentRequestParameters.Builder().build()
+
+        consentInformation = UserMessagingPlatform.getConsentInformation(this)
+        consentInformation?.requestConsentInfoUpdate(
+            this,
+            params,
+            {
+                // The consent information state was updated.
+                // You are now ready to check if a form is available.
+                if (consentInformation?.isConsentFormAvailable == true) {
+                    loadForm()
+                }
+            },
+            {
+                // Handle the error.
+            })
 
         val conf = RequestConfiguration.Builder()
             .setMaxAdContentRating(
@@ -239,5 +263,25 @@ class SearchActivity : BaseActivity() {
 
         // Load the Native Express ad.
         adLoader?.loadAds(AdRequest.Builder().build(), NUMBER_OF_ADS)
+    }
+
+
+    private fun loadForm() {
+        UserMessagingPlatform.loadConsentForm(
+            this,
+            { consentForm ->
+                this.consentForm = consentForm
+                if (consentInformation!!.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
+                    consentForm.show(
+                        this
+                    ) { // Handle dismissal by reloading form.
+                        loadForm()
+                    }
+                }
+
+            }
+        ) {
+            // Handle the error
+        }
     }
 }
