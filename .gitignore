@@ -83,3 +83,18 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+/app/release/
+/Assets/Google Play/image1.png
+/Assets/Google Play/image2.png
+/Assets/Google Play/image3.png
+/Assets/Google Play/image4.png
+/Assets/Google Play/image5.png
+/Assets/Google Play/wefwefw.png
+/Assets/Icons/icons8_literature_96px.png
+/Assets/Screenshots/Screenshot_20200804_215416_lk.prathieshna.bookfinder.jpg
+/Assets/Screenshots/Screenshot_20200804_215434_lk.prathieshna.bookfinder.jpg
+/Assets/Screenshots/Screenshot_20200804_215459_lk.prathieshna.bookfinder.jpg
+/Assets/Screenshots/Screenshot_20200804_215510_lk.prathieshna.bookfinder.jpg
+/Assets/Screenshots/Screenshot_20200804_215518_lk.prathieshna.bookfinder.jpg
+/Assets/Screenshots/Screenshot_20200804_215602_lk.prathieshna.bookfinder.jpg
+/key.jks
