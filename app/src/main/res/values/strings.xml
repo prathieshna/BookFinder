@@ -34,9 +34,8 @@
     <string name="no_preview">NO PREVIEW AVAILABLE</string>
     <string name="social_message">Support the publisher by buying the book!</string>
 
-    <!--    <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>-->
-    <!--    <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>-->
-    <!--    <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--    <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--    <string name="ad_unit_id_reader_page">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--            <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>-->
+    <!--            <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>-->
+    <!--            <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--            <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>-->
 </resources>
