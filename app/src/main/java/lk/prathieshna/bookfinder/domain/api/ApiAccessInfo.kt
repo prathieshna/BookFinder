@@ -2,13 +2,14 @@ package lk.prathieshna.bookfinder.domain.api
 
 import com.google.gson.annotations.SerializedName
 import lk.prathieshna.bookfinder.domain.local.AccessInfo
+import lk.prathieshna.bookfinder.domain.local.Viewability
 
 class ApiAccessInfo {
     @SerializedName("country")
     var country: String? = ""
 
     @SerializedName("viewability")
-    var viewability: String? = ""
+    var viewability: ApiViewability? = ApiViewability.UNKNOWN
 
     @SerializedName("embeddable")
     var embeddable: Boolean? = false
@@ -37,7 +38,7 @@ class ApiAccessInfo {
     fun mapToLocal(): AccessInfo {
         return AccessInfo(
             country = country,
-            viewability = viewability,
+            viewability = Viewability.valueOf(this.viewability?.value ?: Viewability.UNKNOWN.value),
             embeddable = embeddable,
             publicDomain = publicDomain,
             textToSpeechPermission = textToSpeechPermission,

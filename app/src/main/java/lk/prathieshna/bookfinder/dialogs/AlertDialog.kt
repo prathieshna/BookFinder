@@ -17,10 +17,10 @@ class AlertDialog(private val context: Activity) {
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_alert)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        val txtMessage: TextView = dialog.findViewById(R.id.txtMessage)
+        val txtMessage: TextView = dialog.findViewById(R.id.tv_message)
         txtMessage.text = message
         dialog.show()
-        val btnOk: Button = dialog.findViewById(R.id.btnOk)
+        val btnOk: Button = dialog.findViewById(R.id.b_ok)
         btnOk.setOnClickListener {
             hideDialog()
         }

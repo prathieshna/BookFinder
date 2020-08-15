@@ -2,6 +2,7 @@ package lk.prathieshna.bookfinder.activities
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -80,6 +81,14 @@ class ItemActivity : BaseActivity() {
                 loadBanner2()
             }
         }
+
+        b_preview.text = getSelectedItemViewabilityText(bookFinderStore.state, this)
+        b_preview.isEnabled = getSelectedItemViewability(bookFinderStore.state)
+        b_preview.setOnClickListener {
+            val intent = Intent(this, ReaderActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     private fun setUpHeaders() {
