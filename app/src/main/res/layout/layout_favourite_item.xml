@@ -7,7 +7,9 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="15dp"
     android:layout_marginEnd="10dp"
-    app:cardCornerRadius="10dp">
+    app:cardBackgroundColor="#B0000000"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,12 +23,38 @@
             android:layout_weight="1"
             app:cardCornerRadius="7dp">
 
-            <ImageView
-                android:id="@+id/iv_book_thumbnail"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/thumbnail_description"
-                android:scaleType="centerCrop" />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/iv_book_thumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/thumbnail_description"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#57FFFFFF"
+                    android:contentDescription="@string/background_image_overlay" />
+
+                <ImageButton
+                    android:id="@+id/b_remove"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/delete_button_selector"
+                    android:contentDescription="@string/remove_from_favourites"
+                    android:padding="7dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_close" />
+
+            </RelativeLayout>
+
 
         </androidx.cardview.widget.CardView>
 
@@ -45,8 +73,9 @@
                 android:id="@+id/tv_book_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/detailPageTitle"
-                android:textSize="15sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/white"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -54,19 +83,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/detailPageSubtitle"
-                android:textSize="13sp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:textColor="@color/white"
+                android:textSize="12sp"
                 android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/tv_book_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/detailPageAuthor"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/white"
                 android:textSize="12sp" />
 
         </LinearLayout>
-
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

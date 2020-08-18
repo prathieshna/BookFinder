@@ -81,7 +81,10 @@ class BookSearchAdapter(
                     context,
                     getVolumeThumbnailImageURL(bookFinderStore.state, item.id!!)
                 ) { dominantColor ->
-                    itemView.tv_book_title.setTextColor(dominantColor)
+                    itemView.ll_search_item.setBackgroundColor(dominantColor)
+//                    itemView.rl_search_item.background.alpha = 255
+//                    itemView.ll_search_item.setBackgroundColor(dominantColor)
+//                    itemView.ll_search_item.background.alpha = 255
                 }
             }
         }

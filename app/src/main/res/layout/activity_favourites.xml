@@ -3,21 +3,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
     tools:context=".activities.FavouritesActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_favourites"
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingStart="5dp"
-        android:paddingTop="3dp"
-        android:paddingEnd="5dp" />
+        android:contentDescription="@string/background_image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/favorite_books" />
 
-    <View
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@drawable/gradient_background_for_search_meta" />
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background_for_favourites"
+        android:contentDescription="@string/background_image_overlay" />
 
+
+    <TextView
+        android:id="@+id/tv_favourites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="@string/action_favorite"
+        android:textColor="#fff"
+        android:textSize="40sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_favourites">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_favourites"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="5dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="17dp"
+            android:background="@drawable/gradient_background_for_search_meta" />
+
+    </RelativeLayout>
 </RelativeLayout>

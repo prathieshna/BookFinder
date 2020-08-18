@@ -21,7 +21,7 @@ fun getDominantColorFromImageURL(context: Context, url: String, callback: (Int) 
                             R.color.colorPrimaryDark
                         )
                     )
-                    dominantColor = darkenColour(dominantColor, 0.75f)
+                    dominantColor = darkenColour(dominantColor, 0.5f)
                     callback(dominantColor)
                 }
             }

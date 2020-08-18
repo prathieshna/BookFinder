@@ -2,13 +2,7 @@
 <resources>
     <color name="colorPrimary">#4C4C4C</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#FFFFFF</color>
     <color name="alertDialogText">#FFFFFF</color>
     <color name="searchBackground">#FFFFFF</color>
-    <color name="gradientStartColor">#FFFFFF</color>
-    <color name="gradientEndColor">#FFF8E1</color>
-    <color name="detailPageTitle">#4E4E4E</color>
-    <color name="detailPageAuthor">#858585</color>
-    <color name="detailPageSubtitle">#616161</color>
     <color name="white">#fff</color>
 </resources>

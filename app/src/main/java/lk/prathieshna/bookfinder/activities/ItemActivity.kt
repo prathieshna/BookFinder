@@ -7,10 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.DisplayMetrics
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.*
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_item.*
@@ -22,7 +20,6 @@ import lk.prathieshna.bookfinder.state.UdfBaseState
 import lk.prathieshna.bookfinder.state.projections.*
 import lk.prathieshna.bookfinder.store.bookFinderStore
 import lk.prathieshna.bookfinder.utils.DatabaseHandler
-import lk.prathieshna.bookfinder.utils.darkenColour
 import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
 
 
@@ -40,13 +37,12 @@ class ItemActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item)
-        setSupportActionBar(toolbar)
-        toolbar_layout.title = getSelectedItemVolumeName(bookFinderStore.state, this)
+
 
         databaseHandler = DatabaseHandler(this.applicationContext)
         checkFavouriteStatus(databaseHandler)
         setUpFab()
-        animateHeaderColor()
+        animateFabColor()
         setUpHeaders()
 
 
@@ -109,44 +105,28 @@ class ItemActivity : BaseActivity() {
         }
     }
 
-    private fun animateHeaderColor() {
+    private fun animateFabColor() {
         getDominantColorFromImageURL(
             this,
             getSelectedItemVolumeThumbnailImageURL(bookFinderStore.state)
         ) { dominantColor ->
-            var colorAnimation = ValueAnimator.ofObject(
+            val colorAnimation = ValueAnimator.ofObject(
                 ArgbEvaluator(),
                 ContextCompat.getColor(this, R.color.colorPrimary),
                 dominantColor
             )
             colorAnimation.duration = 250 // milliseconds
             colorAnimation.addUpdateListener { animator ->
-                toolbar_layout.setBackgroundColor(animator.animatedValue as Int)
-                toolbar_layout.setContentScrimColor(animator.animatedValue as Int)
-                toolbar_layout.setStatusBarScrimColor(animator.animatedValue as Int)
+                nsv_description_root.setBackgroundColor(animator.animatedValue as Int)
             }
             colorAnimation.start()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                colorAnimation = ValueAnimator.ofObject(
-                    ArgbEvaluator(),
-                    ContextCompat.getColor(this, R.color.colorPrimary),
-                    darkenColour(dominantColor, 0.6f)
-                )
-                colorAnimation.duration = 250 // milliseconds
-                colorAnimation.addUpdateListener { animator ->
-                    window.statusBarColor = animator.animatedValue as Int
-                }
-                colorAnimation.start()
-            }
         }
     }
 
     private fun setUpFab() {
-        findViewById<FloatingActionButton>(R.id.fab_add_to_collection).setOnClickListener { view ->
+        iv_add_to_favourites.setOnClickListener { view ->
             if (isFavourite) {
-                fab_add_to_collection.setImageResource(R.drawable.ic_heart)
+                iv_add_to_favourites.setImageResource(R.drawable.ic_heart)
                 databaseHandler.removeFromFavourites()
                 isFavourite = false
                 Snackbar.make(
@@ -157,7 +137,7 @@ class ItemActivity : BaseActivity() {
                     .setAction(getString(R.string.undo)) {
                         databaseHandler.addToFavourites()
                         isFavourite = true
-                        fab_add_to_collection.setImageResource(R.drawable.ic_heart_tick)
+                        iv_add_to_favourites.setImageResource(R.drawable.ic_heart_tick)
                         Snackbar.make(
                             view,
                             getString(R.string.fav_added_sb_message),
@@ -165,14 +145,14 @@ class ItemActivity : BaseActivity() {
                         ).show()
                     }.show()
             } else {
-                fab_add_to_collection.setImageResource(R.drawable.ic_heart_tick)
+                iv_add_to_favourites.setImageResource(R.drawable.ic_heart_tick)
                 databaseHandler.addToFavourites()
                 isFavourite = true
                 Snackbar.make(view, getString(R.string.fav_added_sb_message), Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.undo)) {
                         databaseHandler.removeFromFavourites()
                         isFavourite = false
-                        fab_add_to_collection.setImageResource(R.drawable.ic_heart)
+                        iv_add_to_favourites.setImageResource(R.drawable.ic_heart)
                         Snackbar.make(
                             view,
                             getString(R.string.fav_remove_sb_message),
@@ -193,9 +173,9 @@ class ItemActivity : BaseActivity() {
     private fun checkFavouriteStatus(databaseHandler: DatabaseHandler) {
         isFavourite = databaseHandler.getFavouriteStatus()
         if (isFavourite)
-            fab_add_to_collection.setImageResource(R.drawable.ic_heart_tick)
+            iv_add_to_favourites.setImageResource(R.drawable.ic_heart_tick)
         else
-            fab_add_to_collection.setImageResource(R.drawable.ic_heart)
+            iv_add_to_favourites.setImageResource(R.drawable.ic_heart)
     }
 
     override fun onStateUpdate(state: UdfBaseState<AppState>, action: BaseAction): Boolean {

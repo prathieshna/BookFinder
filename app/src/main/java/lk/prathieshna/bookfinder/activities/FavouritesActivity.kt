@@ -27,6 +27,8 @@ class FavouritesActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favourites)
 
+        supportActionBar?.hide()
+
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         rv_favourites.layoutManager = linearLayoutManager
@@ -36,7 +38,7 @@ class FavouritesActivity : BaseActivity() {
         favouriteItems.reverse()
         loadNativeAds()
 
-        adapter = BookFavouriteAdapter(this, favouriteItems) { selectedItem ->
+        adapter = BookFavouriteAdapter(favouriteItems, { selectedItem ->
             dispatchAction(
                 GetVolumeByID.Request(
                     id = selectedItem.id ?: "",
@@ -44,7 +46,11 @@ class FavouritesActivity : BaseActivity() {
                     context = this
                 )
             )
-        }
+        }, { selectedItem ->
+            databaseHandler.removeFromFavouritesById(selectedItem.id!!)
+            favouriteItems.remove(selectedItem)
+            adapter.notifyDataSetChanged()
+        })
         rv_favourites.adapter = adapter
     }
 

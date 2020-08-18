@@ -23,7 +23,6 @@
         android:background="@drawable/gradient_background_for_splash">
 
         <LinearLayout
-            android:id="@+id/ll_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -69,13 +68,11 @@
             android:paddingRight="25dp">
 
             <ProgressBar
-                android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:theme="@style/AppTheme.WhiteAccent" />
 
             <TextView
-                android:id="@+id/tv_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-condensed"

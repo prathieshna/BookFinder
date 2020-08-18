@@ -9,13 +9,13 @@ import android.util.DisplayMetrics
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.google.android.gms.ads.*
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_reader.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.actions.BaseAction
 import lk.prathieshna.bookfinder.state.AppState
 import lk.prathieshna.bookfinder.state.UdfBaseState
-import lk.prathieshna.bookfinder.state.projections.getSelectedItemEmbeddedURL
-import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeName
+import lk.prathieshna.bookfinder.state.projections.*
 import lk.prathieshna.bookfinder.store.bookFinderStore
 
 
@@ -28,8 +28,7 @@ class ReaderActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reader)
 
-        val actionBar = supportActionBar
-        actionBar?.title = getSelectedItemVolumeName(bookFinderStore.state, this)
+        supportActionBar?.hide()
 
         showLoader()
 
@@ -70,6 +69,8 @@ class ReaderActivity : BaseActivity() {
                 loadBanner()
             }
         }
+
+        setUpHeaders()
     }
 
     override fun onStateUpdate(state: UdfBaseState<AppState>, action: BaseAction): Boolean {
@@ -130,5 +131,13 @@ class ReaderActivity : BaseActivity() {
     public override fun onDestroy() {
         adView.destroy()
         super.onDestroy()
+    }
+
+    private fun setUpHeaders() {
+        tv_book_author.text = getSelectedItemVolumeAuthors(bookFinderStore.state, this)
+        tv_book_title.text = getSelectedItemVolumeName(bookFinderStore.state, this)
+        tv_book_subtitle.text = getSelectedItemVolumeSubtitle(bookFinderStore.state, this)
+        Picasso.get().load(getSelectedItemVolumeThumbnailImageURL(bookFinderStore.state))
+            .into(iv_book_thumbnail)
     }
 }

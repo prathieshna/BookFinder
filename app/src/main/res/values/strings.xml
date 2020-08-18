@@ -7,7 +7,7 @@
     <string name="not_available">Information is not available</string>
 
     <string name="search">Search</string>
-    <string name="search_here">Search for a book here</string>
+    <string name="search_here">Search</string>
     <string name="thumbnail_description">Thumbnail image of the book cover</string>
 
     <string name="search_meta">We found %d more books for this query.</string>
@@ -19,27 +19,38 @@
     <string name="fav_added_sb_message">Book is added to your favourites</string>
     <string name="undo">UNDO</string>
     <string name="action_favorite">Favourites</string>
-    <string name="ad">Ad</string>
+    <string name="ad">Advertisement</string>
 
 
     <string name="embedded_url" translatable="false">https://books.google.lk/books?id=%1$s&#38;lpg=PP1&#38;pg=PP1&#38;output=embed</string>
 
-    <!--    <string name="ad_unit_id_search" translatable="false">ca-app-pub-3403694871866608/6994030093</string>-->
-    <!--    <string name="ad_unit_id_favourites" translatable="false">ca-app-pub-3403694871866608/1243720404</string>-->
-    <!--    <string name="ad_unit_id_detail_page_2" translatable="false">ca-app-pub-3403694871866608/1238198584</string>-->
-    <!--    <string name="ad_unit_id_detail_page_1" translatable="false">ca-app-pub-3403694871866608/8605552711</string>-->
-    <!--    <string name="ad_unit_id_reader_page" translatable="false">ca-app-pub-3403694871866608/2005012009</string>-->
+    <string name="ad_unit_id_search" translatable="false">ca-app-pub-3403694871866608/6994030093</string>
+    <string name="ad_unit_id_favourites" translatable="false">ca-app-pub-3403694871866608/1243720404</string>
+    <string name="ad_unit_id_detail_page_2" translatable="false">ca-app-pub-3403694871866608/1238198584</string>
+    <string name="ad_unit_id_detail_page_1" translatable="false">ca-app-pub-3403694871866608/8605552711</string>
+    <string name="ad_unit_id_reader_page" translatable="false">ca-app-pub-3403694871866608/2005012009</string>
 
-    <string name="full_preview">FULL PREVIEW</string>
-    <string name="partial_preview">PARTIAL PREVIEW</string>
+    <string name="full_preview">CLICK HERE FOR FULL PREVIEW</string>
+    <string name="partial_preview">CLICK HERE FOR PARTIAL PREVIEW</string>
     <string name="no_preview">NO PREVIEW AVAILABLE</string>
-    <string name="social_message">Support the publisher by buying the book!</string>
+    <string name="reader_message">Tip: Double tap for next page.</string>
 
-    <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>
-    <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="ad_unit_id_reader_page">ca-app-pub-3940256099942544/6300978111</string>
+    <!--    <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>-->
+    <!--    <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>-->
+    <!--    <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--    <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--    <string name="ad_unit_id_reader_page">ca-app-pub-3940256099942544/6300978111</string>-->
+
+
     <string name="version">Version 1.3.0</string>
     <string name="app_icon">App Icon</string>
+    <string name="small_ad">Ad</string>
+    <string name="now_reading">Now Reading:</string>
+    <string name="remove_from_favourites">REMOVE FROM FAVOURITES</string>
+    <string name="background_image">background image</string>
+    <string name="background_image_overlay">background image overlay</string>
+    <string name="favourites_icon">favourites icon</string>
+    <string name="favourites_list">Favourites List</string>
+    <string name="close_icon">close icon</string>
+    <string name="search_icon">search icon</string>
 </resources>

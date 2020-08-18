@@ -1,6 +1,5 @@
 package lk.prathieshna.bookfinder.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +14,12 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_favourite_item.view.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.domain.local.Item
-import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
 
 
 class BookFavouriteAdapter(
-    private val context: Context,
     val data: List<Any>,
-    val clickHandler: (Item) -> Unit
+    val clickHandler: (Item) -> Unit,
+    val removeClickHandler: (Item) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -93,6 +91,10 @@ class BookFavouriteAdapter(
             itemView.setOnClickListener {
                 clickHandler(favouriteItem ?: Item())
             }
+
+            itemView.b_remove.setOnClickListener {
+                removeClickHandler(favouriteItem ?: Item())
+            }
         }
 
         fun setData(item: Item?, position: Int) {
@@ -104,12 +106,6 @@ class BookFavouriteAdapter(
             itemView.tv_book_author.text = favouriteItem?.volumeInfo?.authors?.get(0)
             Picasso.get().load(favouriteItem?.volumeInfo?.imageLinks?.thumbnail)
                 .into(itemView.iv_book_thumbnail)
-            getDominantColorFromImageURL(
-                context,
-                favouriteItem?.volumeInfo?.imageLinks?.thumbnail!!
-            ) { dominantColor ->
-                itemView.tv_book_title.setTextColor(dominantColor)
-            }
         }
     }
 

@@ -122,4 +122,17 @@ class DatabaseHandler(val context: Context) :
         db.close()
         return success
     }
+
+    fun removeFromFavouritesById(id: String): Int {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(KEY_ID, id)
+        val success = db.delete(
+            TABLE_FAVOURITES,
+            "id= '$id'",
+            null
+        )
+        db.close()
+        return success
+    }
 }

@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.gms.ads.*
@@ -54,9 +52,11 @@ class SearchActivity : BaseActivity() {
                 isEOL = searchResultItems.size == getVolumes(state).size
                 searchResultItems.clear()
                 searchResultItems.addAll(getVolumes(state))
-                loadNativeAds()
                 tv_results_meta_data.text = getTotalItems(bookFinderStore.state, this)
+                adapter.notifyDataSetChanged()
                 isLoading = false
+                loadNativeAds()
+                rl_search_results.visibility = View.VISIBLE
                 true
             }
             is GetVolumeByID -> {
@@ -66,25 +66,6 @@ class SearchActivity : BaseActivity() {
             }
             else -> {
                 false
-            }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_item, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_favorite -> {
-                val intent = Intent(this, FavouritesActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
             }
         }
     }
@@ -107,6 +88,7 @@ class SearchActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        supportActionBar?.hide()
 
         val params = ConsentRequestParameters.Builder().build()
 
@@ -134,13 +116,27 @@ class SearchActivity : BaseActivity() {
         MobileAds.setRequestConfiguration(conf)
         MobileAds.initialize(this)
 
+        iv_favourites.setOnClickListener {
+            val intent = Intent(this, FavouritesActivity::class.java)
+            startActivity(intent)
+        }
+
+        iv_clear.setOnClickListener {
+            et_search.text.clear()
+            iv_clear.visibility = View.GONE
+            v_separator.visibility = View.GONE
+            b_search.visibility = View.GONE
+            iv_favourites.visibility = View.VISIBLE
+        }
+
         setUpSearchButton()
         setUpSearchTextWatcher()
         setUpSearchResultsGrid()
+
     }
 
     private fun setUpSearchResultsGrid() {
-        gridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        gridLayoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
         rv_search_results.layoutManager = gridLayoutManager
         adapter = BookSearchAdapter(this, searchResultItems) { selectedItem ->
             dispatchAction(
@@ -212,13 +208,19 @@ class SearchActivity : BaseActivity() {
                 searchResultItems.clear()
                 adapter.notifyDataSetChanged()
                 isEOL = false
+
+                iv_clear.visibility = View.VISIBLE
+                v_separator.visibility = View.VISIBLE
+                b_search.visibility = View.VISIBLE
+                iv_favourites.visibility = View.GONE
+                rl_search_results.visibility = View.GONE
             }
         })
     }
 
     companion object {
         // The number of native ads to load and display.
-        const val NUMBER_OF_ADS = 5
+        const val NUMBER_OF_ADS = 1
     }
 
 
@@ -230,8 +232,10 @@ class SearchActivity : BaseActivity() {
         val offset: Int = searchResultItems.size / mNativeAds.size + 1
         var index = 0
         for (ad in mNativeAds) {
-            searchResultItems.add(index, ad)
-            index += offset
+            if (searchResultItems.size >= index) {
+                searchResultItems.add(index, ad)
+                index += offset
+            }
         }
     }
 
