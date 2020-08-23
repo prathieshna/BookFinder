@@ -22,6 +22,9 @@ class ApiVolumeInfo {
     @SerializedName("description")
     var description: String? = ""
 
+    @SerializedName("industryIdentifiers")
+    var industryIdentifiers: List<ApiIndustryIdentifiers?>? = listOf()
+
     @SerializedName("readingModes")
     var readingModes: ApiReadingMode? = ApiReadingMode()
 
@@ -32,7 +35,7 @@ class ApiVolumeInfo {
     var printedPageCount: Int? = 0
 
     @SerializedName("averageRating")
-    var averageRating: Double? = 0.0
+    var averageRating: Float? = 0F
 
     @SerializedName("ratingsCount")
     var ratingsCount: Int? = 0
@@ -75,6 +78,7 @@ class ApiVolumeInfo {
             publisher = publisher,
             publishedDate = publishedDate,
             description = description,
+            industryIdentifiers = industryIdentifiers?.map { it?.mapToLocal() },
             readingModes = readingModes?.mapToLocal(),
             pageCount = pageCount,
             printedPageCount = printedPageCount,

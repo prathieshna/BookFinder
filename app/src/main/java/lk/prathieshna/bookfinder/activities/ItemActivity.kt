@@ -2,11 +2,15 @@ package lk.prathieshna.bookfinder.activities
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.DisplayMetrics
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.*
 import com.google.android.material.snackbar.Snackbar
@@ -87,6 +91,7 @@ class ItemActivity : BaseActivity() {
 
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun setUpHeaders() {
         tv_book_author.text = getSelectedItemVolumeAuthors(bookFinderStore.state, this)
         tv_book_title.text = getSelectedItemVolumeName(bookFinderStore.state, this)
@@ -103,6 +108,26 @@ class ItemActivity : BaseActivity() {
             tv_book_description.text =
                 Html.fromHtml(getSelectedItemVolumeDescription(bookFinderStore.state, this))
         }
+        rb_stars.rating = getSelectedItemVolumeRating(bookFinderStore.state)
+        tv_reviews.text = getSelectedItemVolumeRatingCountString(bookFinderStore.state, this)
+
+        showLoader()
+
+        webView.settings.javaScriptEnabled = true
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = false
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(intent)
+                return true
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                hideLoader()
+            }
+        }
+        webView.loadUrl(getSelectedItemVolumeIndustryIdentifier(bookFinderStore.state, this))
     }
 
     private fun animateFabColor() {
@@ -117,7 +142,7 @@ class ItemActivity : BaseActivity() {
             )
             colorAnimation.duration = 250 // milliseconds
             colorAnimation.addUpdateListener { animator ->
-                nsv_description_root.setBackgroundColor(animator.animatedValue as Int)
+                tv_book_description.setBackgroundColor(animator.animatedValue as Int)
             }
             colorAnimation.start()
         }

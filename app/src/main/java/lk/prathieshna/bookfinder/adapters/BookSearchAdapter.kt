@@ -14,9 +14,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_search_result_item.view.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.domain.local.Item
-import lk.prathieshna.bookfinder.state.projections.getVolumeAuthors
-import lk.prathieshna.bookfinder.state.projections.getVolumeName
-import lk.prathieshna.bookfinder.state.projections.getVolumeThumbnailImageURL
+import lk.prathieshna.bookfinder.state.projections.*
 import lk.prathieshna.bookfinder.store.bookFinderStore
 import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
 
@@ -73,6 +71,11 @@ class BookSearchAdapter(
             if (item?.id != null) {
                 itemView.tv_book_title.text =
                     getVolumeName(bookFinderStore.state, item.id!!, context)
+
+                itemView.rb_stars.rating = getVolumeRating(bookFinderStore.state, item.id!!)
+                itemView.tv_reviews.text =
+                    getVolumeRatingCountString(bookFinderStore.state, item.id!!, context)
+
                 itemView.tv_book_author.text =
                     getVolumeAuthors(bookFinderStore.state, item.id!!, context)
                 Picasso.get().load(getVolumeThumbnailImageURL(bookFinderStore.state, item.id!!))

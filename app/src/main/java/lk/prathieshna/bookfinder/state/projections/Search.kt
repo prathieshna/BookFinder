@@ -41,6 +41,20 @@ val getVolumeName: (state: UdfBaseState<AppState>, id: String, context: Context)
         else context.getString(R.string.not_available)
     }
 
+val getVolumeRatingCountString: (state: UdfBaseState<AppState>, id: String, context: Context) -> String =
+    { state, id, context ->
+        val ratingCount = getVolumeInfo(state, id).ratingsCount ?: 0
+        when {
+            ratingCount > 1 -> context.getString(R.string.rating_count_many, ratingCount)
+            ratingCount == 1 -> context.getString(R.string.rating_count_1, ratingCount)
+            else -> context.getString(R.string.rating_count_0)
+        }
+    }
+val getVolumeRating: (state: UdfBaseState<AppState>, id: String) -> Float =
+    { state, id ->
+        getVolumeInfo(state, id).averageRating ?: 0F
+    }
+
 val getVolumeDescription: (state: UdfBaseState<AppState>, id: String, context: Context) -> String =
     { state, id, context ->
         val description = getVolumeInfo(state, id).description

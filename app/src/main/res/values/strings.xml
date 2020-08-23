@@ -23,6 +23,7 @@
 
 
     <string name="embedded_url" translatable="false">https://books.google.lk/books?id=%1$s&#38;lpg=PP1&#38;pg=PP1&#38;output=embed</string>
+    <string name="good_reads_url" translatable="false">https://www.goodreads.com/api/reviews_widget_iframe?key=Lb8qHdM3fP8uSv9HqRfg&amp;format=html&amp;isbn=%s&amp;links=fff&amp;review_back=000&amp;stars=fff&amp;text=fff</string>
 
     <string name="ad_unit_id_search" translatable="false">ca-app-pub-3403694871866608/6994030093</string>
     <string name="ad_unit_id_favourites" translatable="false">ca-app-pub-3403694871866608/1243720404</string>
@@ -53,4 +54,8 @@
     <string name="favourites_list">Favourites List</string>
     <string name="close_icon">close icon</string>
     <string name="search_icon">search icon</string>
+
+    <string name="rating_count_1">%d Review</string>
+    <string name="rating_count_many">%d Reviews</string>
+    <string name="rating_count_0">No Reviews Available</string>
 </resources>

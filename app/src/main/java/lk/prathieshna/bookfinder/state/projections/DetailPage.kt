@@ -37,6 +37,30 @@ val getSelectedItemVolumeDescription: (state: UdfBaseState<AppState>, context: C
         else context.getString(R.string.not_available)
     }
 
+val getSelectedItemVolumeRating: (state: UdfBaseState<AppState>) -> Float =
+    { state ->
+        getSelectedItemVolumeInfo(state).averageRating ?: 0F
+    }
+
+val getSelectedItemVolumeIndustryIdentifier: (state: UdfBaseState<AppState>, context: Context) -> String =
+    { state, context ->
+        val industryIdentifier = getSelectedItemVolumeInfo(state).industryIdentifiers
+        if (industryIdentifier?.size ?: 0 > 0) context.getString(
+            R.string.good_reads_url,
+            industryIdentifier?.get(0)?.identifier ?: ""
+        )
+        else context.getString(R.string.good_reads_url, "")
+    }
+
+val getSelectedItemVolumeRatingCountString: (state: UdfBaseState<AppState>, context: Context) -> String =
+    { state, context ->
+        val ratingCount = getSelectedItemVolumeInfo(state).ratingsCount ?: 0
+        when {
+            ratingCount > 1 -> context.getString(R.string.rating_count_many, ratingCount)
+            ratingCount == 1 -> context.getString(R.string.rating_count_1, ratingCount)
+            else -> context.getString(R.string.rating_count_0)
+        }
+    }
 val getSelectedItemVolumeSubtitle: (state: UdfBaseState<AppState>, context: Context) -> String =
     { state, context ->
         val subtitle = getSelectedItemVolumeInfo(state).subtitle
