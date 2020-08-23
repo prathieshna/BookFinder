@@ -43,7 +43,7 @@
     <!--    <string name="ad_unit_id_reader_page">ca-app-pub-3940256099942544/6300978111</string>-->
 
 
-    <string name="version">Version 1.3.0</string>
+    <string name="version">Version 1.4.0</string>
     <string name="app_icon">App Icon</string>
     <string name="small_ad">Ad</string>
     <string name="now_reading">Now Reading:</string>
