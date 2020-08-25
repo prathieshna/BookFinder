@@ -4,16 +4,16 @@ Book Finder is an Ad Supported Mobile Applications that uses Google Books API an
 
 [Download Now!](https://play.google.com/store/apps/details?id=lk.prathieshna.bookfinder)
 
-# Features
+## Features
 * Book Search 
 * Detail View of a Book
 * Add / Remove favourites
 * Full / Partial Preview
 * Read Reviews
 
-# Road Map
+## Road Map
 * Download Books
 * Book review videos from various sources such as Youtube, Vimeo etc
 
-# Authors
+### Authors
 Prathieshna Vekneswaran
