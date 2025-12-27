@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -19,6 +20,9 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Install splash screen (handles Android 12+ splash screen)
         installSplashScreen()
+
+        // Enable edge-to-edge
+        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)

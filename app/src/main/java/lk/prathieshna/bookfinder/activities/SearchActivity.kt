@@ -109,6 +109,21 @@ class SearchActivity : BaseActivity() {
         setContentView(R.layout.activity_search)
         supportActionBar?.hide()
 
+        // Apply window insets for edge-to-edge
+        val rootLayout = findViewById<View>(R.id.root_layout)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            // Keep the existing 20dp padding and add system bar insets
+            val existingTopPadding = 20 * resources.displayMetrics.density.toInt()
+            v.setPadding(
+                systemBars.left,
+                systemBars.top + existingTopPadding,
+                systemBars.right,
+                systemBars.bottom
+            )
+            insets
+        }
+
         // Initialize views
         ivFavourites = findViewById(R.id.iv_favourites)
         ivClear = findViewById(R.id.iv_clear)

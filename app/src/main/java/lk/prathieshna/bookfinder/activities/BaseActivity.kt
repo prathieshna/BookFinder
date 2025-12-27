@@ -1,6 +1,7 @@
 package lk.prathieshna.bookfinder.activities
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import lk.prathieshna.bookfinder.dialogs.AlertDialog
 import lk.prathieshna.bookfinder.dialogs.LoaderDialog
@@ -18,6 +19,7 @@ abstract class BaseActivity : AppCompatActivity(), Base<AppState> {
     override var actionSessionIds: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         loaderDialog = LoaderDialog(this)
         alertDialog = AlertDialog(this)

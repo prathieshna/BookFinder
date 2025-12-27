@@ -5,6 +5,10 @@
     android:id="@+id/nsv_description_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="false"
+    android:overScrollMode="never"
+    android:scrollbars="none"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.ItemActivity"
     android:background="#000"
@@ -12,8 +16,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
 
         <FrameLayout
             android:id="@+id/ad_view_container"
@@ -26,21 +31,185 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:id="@+id/tv_book_description"
             android:layout_width="match_parent"
             android:fontFamily="sans-serif-condensed"
             android:textColor="#fff"
             android:padding="@dimen/text_margin" />
 
-        <Button
-            android:id="@+id/b_view_reviews"
+        <!-- Additional Metadata Section -->
+        <TextView
+            android:id="@+id/tv_metadata_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/view_reviews_on_google_books"
-            android:textAllCaps="false" />
+            android:text="@string/book_information"
+            android:textColor="#FF6F00"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_metadata_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_publisher_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_page_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_categories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_isbn_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+        </LinearLayout>
+
+        <!-- Open Library Stats Section -->
+        <TextView
+            android:id="@+id/tv_ol_stats_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/community_stats"
+            android:textColor="#FF6F00"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_ol_stats_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_ol_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_ol_want_to_read"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_ol_currently_reading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_ol_already_read"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                android:paddingBottom="4dp" />
+
+        </LinearLayout>
+
+        <!-- External Links Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/view_on_external_sites"
+            android:textColor="#FF6F00"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
+
+            <Button
+                android:id="@+id/b_view_on_google_books"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/external_link_button_selector"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/google_books"
+                android:textColor="#fff"
+                android:textSize="13sp"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/b_view_on_open_library"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/external_link_button_selector"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/open_library"
+                android:textColor="#fff"
+                android:textSize="13sp"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

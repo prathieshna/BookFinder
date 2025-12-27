@@ -102,3 +102,14 @@ val getSelectedItemVolumeAuthors: (state: UdfBaseState<AppState>, context: Conte
             }
         } else context.getString(R.string.not_available)
     }
+
+val getSelectedItemInfoLink: (state: UdfBaseState<AppState>) -> String? =
+    { state ->
+        val infoLink = getSelectedItemVolumeInfo(state).infoLink
+        val canonicalLink = getSelectedItemVolumeInfo(state).canonicalVolumeLink
+        when {
+            !infoLink.isNullOrBlank() -> infoLink
+            !canonicalLink.isNullOrBlank() -> canonicalLink
+            else -> null
+        }
+    }

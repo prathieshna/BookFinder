@@ -48,6 +48,19 @@ class ReaderActivity : BaseActivity() {
 
         supportActionBar?.hide()
 
+        // Apply window insets for edge-to-edge
+        val rootLayout = findViewById<android.view.View>(R.id.root_layout)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
+            insets
+        }
+
         // Initialize views
         webView = findViewById(R.id.webView)
         adViewContainer = findViewById(R.id.ad_view_container)
