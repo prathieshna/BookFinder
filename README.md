@@ -2,7 +2,7 @@
   <img width="200" height="200" src="https://github.com/prathieshna/BookFinder/blob/master/app/src/main/ic_launcher-playstore.png" alt="Book Finder app icon">
 </div>
 
-# Book Finder v1.5
+# Book Finder v1.6
 Book Finder is an Ad Supported Mobile Application that uses Google Books API to get information about Books such as title, subtitle, description, cover image, ratings and reviews.
 
 [Download Now!](https://play.google.com/store/apps/details?id=lk.prathieshna.bookfinder)
