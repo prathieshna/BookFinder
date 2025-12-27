@@ -194,7 +194,8 @@
                 android:text="@string/google_books"
                 android:textColor="#fff"
                 android:textSize="13sp"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                tools:ignore="ButtonStyle" />
 
             <Button
                 android:id="@+id/b_view_on_open_library"
@@ -207,7 +208,8 @@
                 android:text="@string/open_library"
                 android:textColor="#fff"
                 android:textSize="13sp"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                tools:ignore="ButtonStyle" />
 
         </LinearLayout>
 

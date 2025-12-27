@@ -59,4 +59,24 @@
     <string name="rating_count_1">%d Review</string>
     <string name="rating_count_many">%d Reviews</string>
     <string name="rating_count_0">No Reviews Available</string>
+
+    <!-- Book metadata section -->
+    <string name="book_information">Book Information</string>
+    <string name="community_stats">Community Stats</string>
+    <string name="view_on_external_sites">View on External Sites</string>
+    <string name="google_books">Google Books</string>
+    <string name="open_library">Open Library</string>
+
+    <!-- Metadata format strings -->
+    <string name="publisher_info">📚 %1$s • %2$s</string>
+    <string name="publisher_only">📚 %1$s</string>
+    <string name="page_count">📖 %d pages</string>
+    <string name="categories">🏷️ %1$s</string>
+    <string name="isbn_info">🔢 %1$s: %2$s</string>
+
+    <!-- Open Library stats format strings -->
+    <string name="ol_rating">⭐ Average Rating: %1$.2f (%2$d ratings)</string>
+    <string name="ol_want_to_read">📚 Want to Read: %d readers</string>
+    <string name="ol_currently_reading">📖 Currently Reading: %d readers</string>
+    <string name="ol_already_read">✅ Already Read: %d readers</string>
 </resources>
