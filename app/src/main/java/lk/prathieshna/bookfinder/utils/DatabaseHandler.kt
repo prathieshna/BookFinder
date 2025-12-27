@@ -48,8 +48,8 @@ class DatabaseHandler(val context: Context) :
         var cursor: Cursor? = null
         return try {
             cursor = db.rawQuery(selectQuery, null)
-            cursor?.moveToFirst() ?: false
-        } catch (e: SQLiteException) {
+            cursor.moveToFirst()
+        } catch (_: SQLiteException) {
             db.execSQL(selectQuery)
             cursor?.close()
             false
@@ -65,11 +65,11 @@ class DatabaseHandler(val context: Context) :
             val list: ArrayList<Item> = ArrayList()
             if (cursor.moveToFirst()) {
                 do {
-                    val id = cursor.getString(cursor.getColumnIndex(KEY_ID))
-                    val name = cursor.getString(cursor.getColumnIndex(KEY_NAME))
-                    val author = cursor.getString(cursor.getColumnIndex(KEY_AUTHOR))
-                    val subtitle = cursor.getString(cursor.getColumnIndex(KEY_SUBTITLE))
-                    val imageUrl = cursor.getString(cursor.getColumnIndex(KEY_IMAGE_URL))
+                    val id = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ID))
+                    val name = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NAME))
+                    val author = cursor.getString(cursor.getColumnIndexOrThrow(KEY_AUTHOR))
+                    val subtitle = cursor.getString(cursor.getColumnIndexOrThrow(KEY_SUBTITLE))
+                    val imageUrl = cursor.getString(cursor.getColumnIndexOrThrow(KEY_IMAGE_URL))
                     val item = Item().copy(
                         id = id,
                         volumeInfo = VolumeInfo(
@@ -84,7 +84,7 @@ class DatabaseHandler(val context: Context) :
             }
             cursor.close()
             list
-        } catch (e: SQLiteException) {
+        } catch (_: SQLiteException) {
             db.execSQL(selectQuery)
             cursor?.close()
             listOf()

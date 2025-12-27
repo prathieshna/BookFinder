@@ -11,7 +11,7 @@ fun getVolumesBySearchReducer(
     action: Action,
     state: UdfBaseState<AppState>
 ): UdfBaseState<AppState> {
-    when (action as GetVolumesBySearch) {
+    return when (action as GetVolumesBySearch) {
         is GetVolumesBySearch.Perform -> {
             val data = action as GetVolumesBySearch.Perform
             var results: MutableList<Item> = getVolumes(state).toMutableList()
@@ -26,15 +26,15 @@ fun getVolumesBySearchReducer(
             val newAppState =
                 state.state.copy(searchResult = action.searchResult.copy(items = results))
 
-            return updateActionsStateStatus(
+            updateActionsStateStatus(
                 state, action.getId(), GetVolumesBySearch.Success(action.getId()), newAppState
             )
         }
         is GetVolumesBySearch.Failure -> {
-            return updateActionsStateStatus(
+            updateActionsStateStatus(
                 state, action.getId(), GetVolumesBySearch.Failure(action.error, action.getId())
             )
         }
+        else -> state
     }
-    return state
 }

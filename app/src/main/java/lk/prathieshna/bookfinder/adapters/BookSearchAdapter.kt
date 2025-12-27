@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.ads.formats.UnifiedNativeAd
-import com.google.android.gms.ads.formats.UnifiedNativeAdView
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.layout_search_result_item.view.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.domain.local.Item
 import lk.prathieshna.bookfinder.state.projections.*
@@ -58,6 +59,13 @@ class BookSearchAdapter(
         private var searchItem: Item? = null
         private var itemIndex: Int = 0
 
+        private val tvBookTitle: TextView = itemView.findViewById(R.id.tv_book_title)
+        private val rbStars: RatingBar = itemView.findViewById(R.id.rb_stars)
+        private val tvReviews: TextView = itemView.findViewById(R.id.tv_reviews)
+        private val tvBookAuthor: TextView = itemView.findViewById(R.id.tv_book_author)
+        private val ivBookThumbnail: ImageView = itemView.findViewById(R.id.iv_book_thumbnail)
+        private val llSearchItem: LinearLayout = itemView.findViewById(R.id.ll_search_item)
+
         init {
             itemView.setOnClickListener {
                 clickHandler(searchItem ?: Item())
@@ -69,25 +77,25 @@ class BookSearchAdapter(
             this.itemIndex = position
 
             if (item?.id != null) {
-                itemView.tv_book_title.text =
+                tvBookTitle.text =
                     getVolumeName(bookFinderStore.state, item.id!!, context)
 
-                itemView.rb_stars.rating = getVolumeRating(bookFinderStore.state, item.id!!)
-                itemView.tv_reviews.text =
+                rbStars.rating = getVolumeRating(bookFinderStore.state, item.id!!)
+                tvReviews.text =
                     getVolumeRatingCountString(bookFinderStore.state, item.id!!, context)
 
-                itemView.tv_book_author.text =
+                tvBookAuthor.text =
                     getVolumeAuthors(bookFinderStore.state, item.id!!, context)
                 Picasso.get().load(getVolumeThumbnailImageURL(bookFinderStore.state, item.id!!))
-                    .into(itemView.iv_book_thumbnail)
+                    .into(ivBookThumbnail)
                 getDominantColorFromImageURL(
                     context,
                     getVolumeThumbnailImageURL(bookFinderStore.state, item.id!!)
                 ) { dominantColor ->
-                    itemView.ll_search_item.setBackgroundColor(dominantColor)
+                    llSearchItem.setBackgroundColor(dominantColor)
 //                    itemView.rl_search_item.background.alpha = 255
-//                    itemView.ll_search_item.setBackgroundColor(dominantColor)
-//                    itemView.ll_search_item.background.alpha = 255
+//                    llSearchItem.setBackgroundColor(dominantColor)
+//                    llSearchItem.background.alpha = 255
                 }
             }
         }
@@ -95,7 +103,7 @@ class BookSearchAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val recyclerViewItem: Any = data[position]
-        return if (recyclerViewItem is UnifiedNativeAd) {
+        return if (recyclerViewItem is NativeAd) {
             UNIFIED_NATIVE_AD_VIEW_TYPE
         } else ITEM_VIEW_TYPE
     }
@@ -109,7 +117,7 @@ class BookSearchAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             UNIFIED_NATIVE_AD_VIEW_TYPE -> {
-                val nativeAd = data[position] as UnifiedNativeAd
+                val nativeAd = data[position] as NativeAd
                 populateNativeAdView(
                     nativeAd,
                     (holder as UnifiedNativeAdViewHolderSearch).getAdView()
@@ -117,12 +125,12 @@ class BookSearchAdapter(
             }
             ITEM_VIEW_TYPE -> {
                 val item = data[position] as Item
-                holder as BookSearchAdapter.ViewHolder
+                holder as ViewHolder
                 holder.setData(item, position)
             }
             else -> {
                 val item = data[position] as Item
-                holder as BookSearchAdapter.ViewHolder
+                holder as ViewHolder
                 holder.setData(item, position)
             }
         }
@@ -131,22 +139,22 @@ class BookSearchAdapter(
     }
 
     private fun populateNativeAdView(
-        nativeAd: UnifiedNativeAd,
-        adView: UnifiedNativeAdView
+        nativeAd: NativeAd,
+        adView: NativeAdView
     ) {
-        // Some assets are guaranteed to be in every UnifiedNativeAd.
+        // Some assets are guaranteed to be in every NativeAd.
         (adView.headlineView as TextView).text = nativeAd.headline
         (adView.bodyView as TextView).text = nativeAd.body
         (adView.callToActionView as Button).text = nativeAd.callToAction
 
-        // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
+        // These assets aren't guaranteed to be in every NativeAd, so it's important to
         // check before trying to display them.
         val icon = nativeAd.icon
         if (icon == null) {
-            adView.iconView.visibility = View.INVISIBLE
+            adView.iconView?.visibility = View.INVISIBLE
         } else {
             (adView.iconView as ImageView).setImageDrawable(icon.drawable)
-            adView.iconView.visibility = View.VISIBLE
+            adView.iconView?.visibility = View.VISIBLE
         }
         // Assign native ad object to the native view.
         adView.setNativeAd(nativeAd)

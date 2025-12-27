@@ -18,4 +18,14 @@
         <item name="colorAccent">@color/white</item> <!-- Whatever color you want-->
     </style>
 
+    <!-- Splash Screen Theme - Suppress Android 12+ splash to use custom splash -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background to transparent -->
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
+        <!-- Disable the splash screen icon -->
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <!-- Make splash screen exit immediately -->
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+
 </resources>

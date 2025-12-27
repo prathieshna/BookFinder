@@ -4,24 +4,38 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.DisplayMetrics
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.google.android.gms.ads.*
+import androidx.core.net.toUri
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_item.*
-import kotlinx.android.synthetic.main.content_scrolling.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.actions.BaseAction
 import lk.prathieshna.bookfinder.state.AppState
 import lk.prathieshna.bookfinder.state.UdfBaseState
-import lk.prathieshna.bookfinder.state.projections.*
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemId
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemViewability
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemViewabilityText
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeAuthors
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeDescription
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeName
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeRating
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeRatingCountString
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeSubtitle
+import lk.prathieshna.bookfinder.state.projections.getSelectedItemVolumeThumbnailImageURL
 import lk.prathieshna.bookfinder.store.bookFinderStore
 import lk.prathieshna.bookfinder.utils.DatabaseHandler
 import lk.prathieshna.bookfinder.utils.getDominantColorFromImageURL
@@ -35,13 +49,38 @@ class ItemActivity : BaseActivity() {
 
     private var initialLayoutComplete = false
     private var initialLayoutComplete2 = false
-    // Determine the screen width (less decorations) to use for the ad width.
-    // If the ad hasn't been laid out, default to the full screen width.
+
+    // View references
+    private lateinit var adViewContainer: FrameLayout
+    private lateinit var adViewContainer2: FrameLayout
+    private lateinit var bPreview: Button
+    private lateinit var bViewReviews: Button
+    private lateinit var tvBookAuthor: TextView
+    private lateinit var tvBookTitle: TextView
+    private lateinit var tvBookSubtitle: TextView
+    private lateinit var ivBookThumbnail: ImageView
+    private lateinit var tvBookDescription: TextView
+    private lateinit var rbStars: RatingBar
+    private lateinit var tvReviews: TextView
+    private lateinit var ivAddToFavourites: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item)
 
+        // Initialize views
+        adViewContainer = findViewById(R.id.ad_view_container)
+        adViewContainer2 = findViewById(R.id.ad_view_container_2)
+        bPreview = findViewById(R.id.b_preview)
+        bViewReviews = findViewById(R.id.b_view_reviews)
+        tvBookAuthor = findViewById(R.id.tv_book_author)
+        tvBookTitle = findViewById(R.id.tv_book_title)
+        tvBookSubtitle = findViewById(R.id.tv_book_subtitle)
+        ivBookThumbnail = findViewById(R.id.iv_book_thumbnail)
+        tvBookDescription = findViewById(R.id.tv_book_description)
+        rbStars = findViewById(R.id.rb_stars)
+        tvReviews = findViewById(R.id.tv_reviews)
+        ivAddToFavourites = findViewById(R.id.iv_add_to_favourites)
 
         databaseHandler = DatabaseHandler(this.applicationContext)
         checkFavouriteStatus(databaseHandler)
@@ -62,30 +101,33 @@ class ItemActivity : BaseActivity() {
                 .build()
         )
 
-        adView = AdView(this)
-        adView2 = AdView(this)
-        ad_view_container.addView(adView)
-        ad_view_container_2.addView(adView2)
         // Since we're loading the banner based on the adContainerView size, we need to wait until this
         // view is laid out before we can get the width.
-        ad_view_container.viewTreeObserver.addOnGlobalLayoutListener {
+        adViewContainer.viewTreeObserver.addOnGlobalLayoutListener {
             if (!initialLayoutComplete) {
                 initialLayoutComplete = true
                 loadBanner()
             }
         }
 
-        ad_view_container_2.viewTreeObserver.addOnGlobalLayoutListener {
+        adViewContainer2.viewTreeObserver.addOnGlobalLayoutListener {
             if (!initialLayoutComplete2) {
                 initialLayoutComplete2 = true
                 loadBanner2()
             }
         }
 
-        b_preview.text = getSelectedItemViewabilityText(bookFinderStore.state, this)
-        b_preview.isEnabled = getSelectedItemViewability(bookFinderStore.state)
-        b_preview.setOnClickListener {
+        bPreview.text = getSelectedItemViewabilityText(bookFinderStore.state, this)
+        bPreview.isEnabled = getSelectedItemViewability(bookFinderStore.state)
+        bPreview.setOnClickListener {
             val intent = Intent(this, ReaderActivity::class.java)
+            startActivity(intent)
+        }
+
+        bViewReviews.setOnClickListener {
+            val bookId = getSelectedItemId(bookFinderStore.state, this)
+            val reviewsUrl = getString(R.string.google_books_reviews_url, bookId)
+            val intent = Intent(Intent.ACTION_VIEW, reviewsUrl.toUri())
             startActivity(intent)
         }
 
@@ -93,41 +135,23 @@ class ItemActivity : BaseActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setUpHeaders() {
-        tv_book_author.text = getSelectedItemVolumeAuthors(bookFinderStore.state, this)
-        tv_book_title.text = getSelectedItemVolumeName(bookFinderStore.state, this)
-        tv_book_subtitle.text = getSelectedItemVolumeSubtitle(bookFinderStore.state, this)
+        tvBookAuthor.text = getSelectedItemVolumeAuthors(bookFinderStore.state, this)
+        tvBookTitle.text = getSelectedItemVolumeName(bookFinderStore.state, this)
+        tvBookSubtitle.text = getSelectedItemVolumeSubtitle(bookFinderStore.state, this)
         Picasso.get().load(getSelectedItemVolumeThumbnailImageURL(bookFinderStore.state))
-            .into(iv_book_thumbnail)
+            .into(ivBookThumbnail)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tv_book_description.text = Html.fromHtml(
+            tvBookDescription.text = Html.fromHtml(
                 getSelectedItemVolumeDescription(bookFinderStore.state, this),
                 Html.FROM_HTML_MODE_COMPACT
             )
         } else {
             @Suppress("DEPRECATION")
-            tv_book_description.text =
+            tvBookDescription.text =
                 Html.fromHtml(getSelectedItemVolumeDescription(bookFinderStore.state, this))
         }
-        rb_stars.rating = getSelectedItemVolumeRating(bookFinderStore.state)
-        tv_reviews.text = getSelectedItemVolumeRatingCountString(bookFinderStore.state, this)
-
-        showLoader()
-
-        webView.settings.javaScriptEnabled = true
-        webView.settings.loadWithOverviewMode = true
-        webView.settings.useWideViewPort = false
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(intent)
-                return true
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                hideLoader()
-            }
-        }
-        webView.loadUrl(getSelectedItemVolumeIndustryIdentifier(bookFinderStore.state, this))
+        rbStars.rating = getSelectedItemVolumeRating(bookFinderStore.state)
+        tvReviews.text = getSelectedItemVolumeRatingCountString(bookFinderStore.state, this)
     }
 
     private fun animateFabColor() {
@@ -142,16 +166,16 @@ class ItemActivity : BaseActivity() {
             )
             colorAnimation.duration = 250 // milliseconds
             colorAnimation.addUpdateListener { animator ->
-                tv_book_description.setBackgroundColor(animator.animatedValue as Int)
+                tvBookDescription.setBackgroundColor(animator.animatedValue as Int)
             }
             colorAnimation.start()
         }
     }
 
     private fun setUpFab() {
-        iv_add_to_favourites.setOnClickListener { view ->
+        ivAddToFavourites.setOnClickListener { view ->
             if (isFavourite) {
-                iv_add_to_favourites.setImageResource(R.drawable.ic_heart)
+                ivAddToFavourites.setImageResource(R.drawable.ic_heart)
                 databaseHandler.removeFromFavourites()
                 isFavourite = false
                 Snackbar.make(
@@ -162,7 +186,7 @@ class ItemActivity : BaseActivity() {
                     .setAction(getString(R.string.undo)) {
                         databaseHandler.addToFavourites()
                         isFavourite = true
-                        iv_add_to_favourites.setImageResource(R.drawable.ic_heart_tick)
+                        ivAddToFavourites.setImageResource(R.drawable.ic_heart_tick)
                         Snackbar.make(
                             view,
                             getString(R.string.fav_added_sb_message),
@@ -170,14 +194,14 @@ class ItemActivity : BaseActivity() {
                         ).show()
                     }.show()
             } else {
-                iv_add_to_favourites.setImageResource(R.drawable.ic_heart_tick)
+                ivAddToFavourites.setImageResource(R.drawable.ic_heart_tick)
                 databaseHandler.addToFavourites()
                 isFavourite = true
                 Snackbar.make(view, getString(R.string.fav_added_sb_message), Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.undo)) {
                         databaseHandler.removeFromFavourites()
                         isFavourite = false
-                        iv_add_to_favourites.setImageResource(R.drawable.ic_heart)
+                        ivAddToFavourites.setImageResource(R.drawable.ic_heart)
                         Snackbar.make(
                             view,
                             getString(R.string.fav_remove_sb_message),
@@ -191,16 +215,20 @@ class ItemActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         checkFavouriteStatus(databaseHandler)
-        adView.resume()
-        adView2.resume()
+        if (::adView.isInitialized) {
+            adView.resume()
+        }
+        if (::adView2.isInitialized) {
+            adView2.resume()
+        }
     }
 
     private fun checkFavouriteStatus(databaseHandler: DatabaseHandler) {
         isFavourite = databaseHandler.getFavouriteStatus()
         if (isFavourite)
-            iv_add_to_favourites.setImageResource(R.drawable.ic_heart_tick)
+            ivAddToFavourites.setImageResource(R.drawable.ic_heart_tick)
         else
-            iv_add_to_favourites.setImageResource(R.drawable.ic_heart)
+            ivAddToFavourites.setImageResource(R.drawable.ic_heart)
     }
 
     override fun onStateUpdate(state: UdfBaseState<AppState>, action: BaseAction): Boolean {
@@ -215,55 +243,64 @@ class ItemActivity : BaseActivity() {
 
     private val adSize: AdSize
         get() {
-            @Suppress("DEPRECATION") val display =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    this.display
-                } else {
-                    windowManager.defaultDisplay
+            val displayMetrics = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowMetrics = windowManager.currentWindowMetrics
+                val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(
+                    android.view.WindowInsets.Type.systemBars()
+                )
+                DisplayMetrics().apply {
+                    val bounds = windowMetrics.bounds
+                    widthPixels = bounds.width() - insets.left - insets.right
+                    heightPixels = bounds.height() - insets.top - insets.bottom
+                    density = resources.displayMetrics.density
                 }
-
-            val outMetrics = DisplayMetrics()
-            display?.getMetrics(outMetrics)
-
-            val density = outMetrics.density
-
-            var adWidthPixels = ad_view_container.width.toFloat()
-            if (adWidthPixels == 0f) {
-                adWidthPixels = outMetrics.widthPixels.toFloat()
+            } else {
+                @Suppress("DEPRECATION")
+                resources.displayMetrics
             }
 
-            val adWidth = (adWidthPixels / density).toInt()
+            var adWidthPixels = adViewContainer.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = displayMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / displayMetrics.density).toInt()
             return AdSize.getPortraitAnchoredAdaptiveBannerAdSize(this, adWidth)
         }
 
     private val adSize2: AdSize
         get() {
-            @Suppress("DEPRECATION") val display =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    this.display
-                } else {
-                    windowManager.defaultDisplay
+            val displayMetrics = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowMetrics = windowManager.currentWindowMetrics
+                val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(
+                    android.view.WindowInsets.Type.systemBars()
+                )
+                DisplayMetrics().apply {
+                    val bounds = windowMetrics.bounds
+                    widthPixels = bounds.width() - insets.left - insets.right
+                    heightPixels = bounds.height() - insets.top - insets.bottom
+                    density = resources.displayMetrics.density
                 }
-
-            val outMetrics = DisplayMetrics()
-            display?.getMetrics(outMetrics)
-
-            val density = outMetrics.density
-
-            var adWidthPixels = ad_view_container_2.width.toFloat()
-            if (adWidthPixels == 0f) {
-                adWidthPixels = outMetrics.widthPixels.toFloat()
+            } else {
+                @Suppress("DEPRECATION")
+                resources.displayMetrics
             }
 
-            val adWidth = (adWidthPixels / density).toInt()
+            var adWidthPixels = adViewContainer2.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = displayMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / displayMetrics.density).toInt()
             return AdSize.getPortraitAnchoredAdaptiveBannerAdSize(this, adWidth)
         }
 
 
     private fun loadBanner() {
+        adView = AdView(this)
         adView.adUnitId = getString(R.string.ad_unit_id_detail_page_1)
-
-        adView.adSize = adSize
+        adView.setAdSize(adSize)
+        adViewContainer.addView(adView)
 
         // Create an ad request.
         val adRequest = AdRequest.Builder().build()
@@ -273,9 +310,10 @@ class ItemActivity : BaseActivity() {
     }
 
     private fun loadBanner2() {
+        adView2 = AdView(this)
         adView2.adUnitId = getString(R.string.ad_unit_id_detail_page_2)
-
-        adView2.adSize = adSize2
+        adView2.setAdSize(adSize2)
+        adViewContainer2.addView(adView2)
 
         // Create an ad request.
         val adRequest = AdRequest.Builder().build()
@@ -286,15 +324,23 @@ class ItemActivity : BaseActivity() {
 
     /** Called when leaving the activity  */
     public override fun onPause() {
-        adView.pause()
-        adView2.pause()
+        if (::adView.isInitialized) {
+            adView.pause()
+        }
+        if (::adView2.isInitialized) {
+            adView2.pause()
+        }
         super.onPause()
     }
 
     /** Called before the activity is destroyed  */
     public override fun onDestroy() {
-        adView.destroy()
-        adView2.destroy()
+        if (::adView.isInitialized) {
+            adView.destroy()
+        }
+        if (::adView2.isInitialized) {
+            adView2.destroy()
+        }
         super.onDestroy()
     }
 }

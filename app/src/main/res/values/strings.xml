@@ -23,7 +23,8 @@
 
 
     <string name="embedded_url" translatable="false">https://books.google.lk/books?id=%1$s&#38;lpg=PP1&#38;pg=PP1&#38;output=embed</string>
-    <string name="good_reads_url" translatable="false">https://www.goodreads.com/api/reviews_widget_iframe?key=Lb8qHdM3fP8uSv9HqRfg&amp;format=html&amp;isbn=%s&amp;links=fff&amp;review_back=000&amp;stars=fff&amp;text=fff</string>
+    <string name="google_books_reviews_url" translatable="false">https://books.google.lk/books?id=%1$s&amp;sitesec=reviews</string>
+    <string name="view_reviews_on_google_books">View Reviews on Google Books</string>
 
     <string name="ad_unit_id_search" translatable="false">ca-app-pub-3403694871866608/6994030093</string>
     <string name="ad_unit_id_favourites" translatable="false">ca-app-pub-3403694871866608/1243720404</string>
@@ -43,7 +44,7 @@
     <!--    <string name="ad_unit_id_reader_page">ca-app-pub-3940256099942544/6300978111</string>-->
 
 
-    <string name="version">Version 1.4.0</string>
+    <string name="version">Version 1.5.0</string>
     <string name="app_icon">App Icon</string>
     <string name="small_ad">Ad</string>
     <string name="now_reading">Now Reading:</string>

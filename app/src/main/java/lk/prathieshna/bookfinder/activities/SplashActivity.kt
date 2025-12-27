@@ -1,37 +1,78 @@
 package lk.prathieshna.bookfinder.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_splash.*
+import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import lk.prathieshna.bookfinder.R
+import lk.prathieshna.bookfinder.utils.FullScreenVideoView
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
+    private lateinit var vvBackground: FullScreenVideoView
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install splash screen (handles Android 12+ splash screen)
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         supportActionBar?.hide()
-        vv_background.setVideoURI(Uri.parse("android.resource://" + packageName + "/" + R.raw.book))
-        vv_background.setOnPreparedListener { mediaPlayer ->
-            val videoRatio = mediaPlayer.videoWidth / mediaPlayer.videoHeight.toFloat()
-            val screenRatio = vv_background.width / vv_background.height.toFloat()
-            val scaleX = videoRatio / screenRatio
-            if (scaleX >= 1f) {
-                vv_background.scaleX = scaleX
-            } else {
-                vv_background.scaleY = 1f / scaleX
-            }
-        }
-        vv_background.start()
 
+        // Initialize views
+        vvBackground = findViewById(R.id.vv_background)
+
+        vvBackground.setVideoURI(("android.resource://" + packageName + "/" + R.raw.book).toUri())
+        vvBackground.setOnPreparedListener { mediaPlayer ->
+            mediaPlayer.isLooping = true
+
+            // Resize VideoView to fill screen while maintaining aspect ratio (CENTER_CROP)
+            resizeVideoView(mediaPlayer)
+        }
+        vvBackground.start()
 
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
             finish()
         }, 5000)
+    }
+
+    private fun resizeVideoView(mediaPlayer: MediaPlayer) {
+        val videoWidth = mediaPlayer.videoWidth
+        val videoHeight = mediaPlayer.videoHeight
+
+        val screenWidth = vvBackground.width
+        val screenHeight = vvBackground.height
+
+        if (videoWidth == 0 || videoHeight == 0 || screenWidth == 0 || screenHeight == 0) {
+            return
+        }
+
+        val videoRatio = videoWidth.toFloat() / videoHeight.toFloat()
+        val screenRatio = screenWidth.toFloat() / screenHeight.toFloat()
+
+        val layoutParams = vvBackground.layoutParams
+
+        if (videoRatio > screenRatio) {
+            // Video is wider - match height, let width overflow
+            layoutParams.width = (screenHeight * videoRatio).toInt()
+            layoutParams.height = screenHeight
+        } else {
+            // Video is taller - match width, let height overflow
+            layoutParams.width = screenWidth
+            layoutParams.height = (screenWidth / videoRatio).toInt()
+        }
+
+        vvBackground.layoutParams = layoutParams
+
+        // Center the video
+        vvBackground.translationX = (screenWidth - layoutParams.width) / 2f
+        vvBackground.translationY = (screenHeight - layoutParams.height) / 2f
     }
 }

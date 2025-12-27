@@ -2,15 +2,15 @@ package lk.prathieshna.bookfinder.adapters
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.ads.formats.MediaView
-import com.google.android.gms.ads.formats.UnifiedNativeAdView
+import com.google.android.gms.ads.nativead.MediaView
+import com.google.android.gms.ads.nativead.NativeAdView
 import lk.prathieshna.bookfinder.R
 
 
 class UnifiedNativeAdViewHolderFavourites internal constructor(view: View) :
     RecyclerView.ViewHolder(view) {
-    private val adView: UnifiedNativeAdView =
-        view.findViewById<View>(R.id.ad_view_favourite) as UnifiedNativeAdView
+    private val adView: NativeAdView =
+        view.findViewById<View>(R.id.ad_view_favourite) as NativeAdView
 
     init {
         adView.mediaView = adView.findViewById<View>(R.id.ad_media) as MediaView
@@ -24,7 +24,7 @@ class UnifiedNativeAdViewHolderFavourites internal constructor(view: View) :
         adView.advertiserView = adView.findViewById(R.id.ad_advertiser)
     }
 
-    fun getAdView(): UnifiedNativeAdView {
+    fun getAdView(): NativeAdView {
         return adView
     }
 }

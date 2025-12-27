@@ -34,12 +34,13 @@
             android:textColor="#fff"
             android:padding="@dimen/text_margin" />
 
-        <WebView
-            android:id="@+id/webView"
+        <Button
+            android:id="@+id/b_view_reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_margin="16dp"
+            android:text="@string/view_reviews_on_google_books"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 

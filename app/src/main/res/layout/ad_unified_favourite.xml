@@ -10,7 +10,7 @@
     app:cardCornerRadius="15dp"
     app:cardElevation="0dp">
 
-    <com.google.android.gms.ads.formats.UnifiedNativeAdView
+    <com.google.android.gms.ads.nativead.NativeAdView
         android:id="@+id/ad_view_favourite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -44,10 +44,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
                     android:paddingTop="3dp"
-
-                    android:paddingRight="20dp">
+                    android:paddingEnd="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -61,11 +60,8 @@
                             android:layout_height="40dp"
                             android:adjustViewBounds="true"
                             android:contentDescription="@string/ad"
-
                             android:paddingStart="5dp"
-                            android:paddingLeft="5dp"
                             android:paddingEnd="5dp"
-                            android:paddingRight="5dp"
                             android:paddingBottom="5dp" />
 
                         <LinearLayout
@@ -119,12 +115,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:layout_marginRight="20dp"
                             android:fontFamily="sans-serif-condensed-light"
                             android:textColor="#FFFFFF"
                             android:textSize="12sp" />
 
-                        <com.google.android.gms.ads.formats.MediaView
+                        <com.google.android.gms.ads.nativead.MediaView
                             android:id="@+id/ad_media"
                             android:layout_width="250dp"
                             android:layout_height="175dp"
@@ -145,9 +140,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-condensed"
                                 android:paddingStart="5dp"
-                                android:paddingLeft="5dp"
                                 android:paddingEnd="5dp"
-                                android:paddingRight="5dp"
                                 android:textColor="#FFFFFF"
                                 android:textSize="12sp" />
 
@@ -157,9 +150,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-condensed"
                                 android:paddingStart="5dp"
-                                android:paddingLeft="5dp"
                                 android:paddingEnd="5dp"
-                                android:paddingRight="5dp"
                                 android:textColor="#FFFFFF"
                                 android:textSize="12sp" />
 
@@ -177,5 +168,5 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-    </com.google.android.gms.ads.formats.UnifiedNativeAdView>
+    </com.google.android.gms.ads.nativead.NativeAdView>
 </androidx.cardview.widget.CardView>

@@ -4,11 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.formats.UnifiedNativeAd
-import kotlinx.android.synthetic.main.activity_favourites.*
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.nativead.NativeAd
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.actions.BaseAction
 import lk.prathieshna.bookfinder.actions.GetVolumeByID
@@ -23,15 +24,21 @@ class FavouritesActivity : BaseActivity() {
     private lateinit var databaseHandler: DatabaseHandler
     private lateinit var adapter: BookFavouriteAdapter
 
+    // View references
+    private lateinit var rvFavourites: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favourites)
 
         supportActionBar?.hide()
 
+        // Initialize views
+        rvFavourites = findViewById(R.id.rv_favourites)
+
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        rv_favourites.layoutManager = linearLayoutManager
+        rvFavourites.layoutManager = linearLayoutManager
 
         databaseHandler = DatabaseHandler(this.applicationContext)
         favouriteItems = databaseHandler.getFavouriteBooks().toMutableList()
@@ -48,10 +55,13 @@ class FavouritesActivity : BaseActivity() {
             )
         }, { selectedItem ->
             databaseHandler.removeFromFavouritesById(selectedItem.id!!)
+            val position = favouriteItems.indexOf(selectedItem)
             favouriteItems.remove(selectedItem)
-            adapter.notifyDataSetChanged()
+            if (position != -1) {
+                adapter.notifyItemRemoved(position)
+            }
         })
-        rv_favourites.adapter = adapter
+        rvFavourites.adapter = adapter
     }
 
     override fun onStateUpdate(state: UdfBaseState<AppState>, action: BaseAction): Boolean {
@@ -73,6 +83,7 @@ class FavouritesActivity : BaseActivity() {
         mNativeAds.clear()
         favouriteItems.addAll(databaseHandler.getFavouriteBooks())
         favouriteItems.reverse()
+        @Suppress("NotifyDataSetChanged")
         adapter.notifyDataSetChanged()
         loadNativeAds()
     }
@@ -97,7 +108,7 @@ class FavouritesActivity : BaseActivity() {
     private var adLoader: AdLoader? = null
 
     // List of native ads that have been successfully loaded.
-    private val mNativeAds = mutableListOf<UnifiedNativeAd>()
+    private val mNativeAds = mutableListOf<NativeAd>()
 
     private fun insertAdsInMenuItems() {
         if (mNativeAds.isEmpty()) {
@@ -114,15 +125,15 @@ class FavouritesActivity : BaseActivity() {
     private fun loadNativeAds() {
         val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_favourites))
         adLoader =
-            builder.forUnifiedNativeAd { unifiedNativeAd -> // A native ad loaded successfully, check if the ad loader has finished loading
+            builder.forNativeAd { nativeAd -> // A native ad loaded successfully, check if the ad loader has finished loading
                 // and if so, insert the ads into the list.
-                mNativeAds.add(unifiedNativeAd)
+                mNativeAds.add(nativeAd)
                 if (!adLoader!!.isLoading) {
                     insertAdsInMenuItems()
                 }
             }.withAdListener(
                 object : AdListener() {
-                    override fun onAdFailedToLoad(errorCode: Int) {
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         // A native ad failed to load, check if the ad loader has finished loading
                         // and if so, insert the ads into the list.
                         Log.e(
@@ -131,6 +142,7 @@ class FavouritesActivity : BaseActivity() {
                         )
                         if (!adLoader!!.isLoading) {
                             insertAdsInMenuItems()
+                            @Suppress("NotifyDataSetChanged")
                             adapter.notifyDataSetChanged()
                         }
                     }

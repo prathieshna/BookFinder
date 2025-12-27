@@ -9,20 +9,20 @@ fun setSelectedReducer(
     action: Action,
     state: UdfBaseState<AppState>
 ): UdfBaseState<AppState> {
-    when (action as GetVolumeByID) {
+    return when (action as GetVolumeByID) {
         is GetVolumeByID.Perform -> {
             val data = action as GetVolumeByID.Perform
             val newAppState = state.state.copy(selectedItem = data.selectedItem)
 
-            return updateActionsStateStatus(
+            updateActionsStateStatus(
                 state, action.getId(), GetVolumeByID.Success(action.getId()), newAppState
             )
         }
         is GetVolumeByID.Failure -> {
-            return updateActionsStateStatus(
+            updateActionsStateStatus(
                 state, action.getId(), GetVolumeByID.Failure(action.error, action.getId())
             )
         }
+        else -> state
     }
-    return state
 }

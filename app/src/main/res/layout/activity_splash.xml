@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.SplashActivity">
 
-    <VideoView
+    <lk.prathieshna.bookfinder.utils.FullScreenVideoView
         android:id="@+id/vv_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -63,9 +63,7 @@
             android:layout_marginBottom="30dp"
             android:orientation="horizontal"
             android:paddingStart="0dp"
-            android:paddingLeft="0dp"
-            android:paddingEnd="25dp"
-            android:paddingRight="25dp">
+            android:paddingEnd="25dp">
 
             <ProgressBar
                 android:layout_width="wrap_content"

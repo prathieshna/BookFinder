@@ -6,16 +6,24 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.gms.ads.*
-import com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_UNSPECIFIED
-import com.google.android.gms.ads.formats.UnifiedNativeAd
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
+import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
-import kotlinx.android.synthetic.main.activity_search.*
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.actions.BaseAction
 import lk.prathieshna.bookfinder.actions.GetVolumeByID
@@ -38,7 +46,7 @@ class SearchActivity : BaseActivity() {
     private var adLoader: AdLoader? = null
 
     // List of native ads that have been successfully loaded.
-    private val mNativeAds = mutableListOf<UnifiedNativeAd>()
+    private val mNativeAds = mutableListOf<NativeAd>()
 
     private var searchResultItems = mutableListOf<Any>()
     private lateinit var adapter: BookSearchAdapter
@@ -46,17 +54,28 @@ class SearchActivity : BaseActivity() {
     private var isLoading: Boolean = false
     private var isEOL: Boolean = false
 
+    // View references
+    private lateinit var ivFavourites: ImageView
+    private lateinit var ivClear: ImageView
+    private lateinit var vSeparator: View
+    private lateinit var bSearch: Button
+    private lateinit var etSearch: EditText
+    private lateinit var tvResultsMetaData: TextView
+    private lateinit var rlSearchResults: RelativeLayout
+    private lateinit var rvSearchResults: RecyclerView
+
     override fun onStateUpdate(state: UdfBaseState<AppState>, action: BaseAction): Boolean {
         return when (action) {
             is GetVolumesBySearch -> {
                 isEOL = searchResultItems.size == getVolumes(state).size
                 searchResultItems.clear()
                 searchResultItems.addAll(getVolumes(state))
-                tv_results_meta_data.text = getTotalItems(bookFinderStore.state, this)
+                tvResultsMetaData.text = getTotalItems(bookFinderStore.state, this)
+                @Suppress("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
                 isLoading = false
                 loadNativeAds()
-                rl_search_results.visibility = View.VISIBLE
+                rlSearchResults.visibility = View.VISIBLE
                 true
             }
             is GetVolumeByID -> {
@@ -90,6 +109,16 @@ class SearchActivity : BaseActivity() {
         setContentView(R.layout.activity_search)
         supportActionBar?.hide()
 
+        // Initialize views
+        ivFavourites = findViewById(R.id.iv_favourites)
+        ivClear = findViewById(R.id.iv_clear)
+        vSeparator = findViewById(R.id.v_separator)
+        bSearch = findViewById(R.id.b_search)
+        etSearch = findViewById(R.id.et_search)
+        tvResultsMetaData = findViewById(R.id.tv_results_meta_data)
+        rlSearchResults = findViewById(R.id.rl_search_results)
+        rvSearchResults = findViewById(R.id.rv_search_results)
+
         val params = ConsentRequestParameters.Builder().build()
 
         consentInformation = UserMessagingPlatform.getConsentInformation(this)
@@ -108,25 +137,23 @@ class SearchActivity : BaseActivity() {
             })
 
         val conf = RequestConfiguration.Builder()
-            .setMaxAdContentRating(
-                MAX_AD_CONTENT_RATING_UNSPECIFIED
-            )
+            .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_UNSPECIFIED)
             .build()
 
         MobileAds.setRequestConfiguration(conf)
         MobileAds.initialize(this)
 
-        iv_favourites.setOnClickListener {
+        ivFavourites.setOnClickListener {
             val intent = Intent(this, FavouritesActivity::class.java)
             startActivity(intent)
         }
 
-        iv_clear.setOnClickListener {
-            et_search.text.clear()
-            iv_clear.visibility = View.GONE
-            v_separator.visibility = View.GONE
-            b_search.visibility = View.GONE
-            iv_favourites.visibility = View.VISIBLE
+        ivClear.setOnClickListener {
+            etSearch.text.clear()
+            ivClear.visibility = View.GONE
+            vSeparator.visibility = View.GONE
+            bSearch.visibility = View.GONE
+            ivFavourites.visibility = View.VISIBLE
         }
 
         setUpSearchButton()
@@ -137,7 +164,7 @@ class SearchActivity : BaseActivity() {
 
     private fun setUpSearchResultsGrid() {
         gridLayoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
-        rv_search_results.layoutManager = gridLayoutManager
+        rvSearchResults.layoutManager = gridLayoutManager
         adapter = BookSearchAdapter(this, searchResultItems) { selectedItem ->
             dispatchAction(
                 GetVolumeByID.Request(
@@ -147,9 +174,9 @@ class SearchActivity : BaseActivity() {
                 )
             )
         }
-        rv_search_results.adapter = adapter
+        rvSearchResults.adapter = adapter
 
-        rv_search_results.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvSearchResults.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val lastVisibleItemPosition: Int
                 val lastVisibleItemPositions = gridLayoutManager.findLastVisibleItemPositions(null)
@@ -158,7 +185,7 @@ class SearchActivity : BaseActivity() {
                     isLoading = true
                     dispatchAction(
                         GetVolumesBySearch.Request(
-                            q = et_search.text.toString(),
+                            q = etSearch.text.toString(),
                             startIndex = searchResultItems.size - 1,
                             context = this@SearchActivity,
                             actionId = getActionId()
@@ -170,11 +197,11 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun setUpSearchButton() {
-        b_search.setOnClickListener {
+        bSearch.setOnClickListener {
             isLoading = true
             dispatchAction(
                 GetVolumesBySearch.Request(
-                    q = et_search.text.toString(),
+                    q = etSearch.text.toString(),
                     startIndex = 0,
                     context = this,
                     actionId = getActionId()
@@ -184,7 +211,7 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun setUpSearchTextWatcher() {
-        et_search.addTextChangedListener(object : TextWatcher {
+        etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(currentText: Editable?) {
 
             }
@@ -204,16 +231,17 @@ class SearchActivity : BaseActivity() {
                 count: Int,
                 after: Int
             ) {
-                tv_results_meta_data.text = ""
+                tvResultsMetaData.text = ""
+                val size = searchResultItems.size
                 searchResultItems.clear()
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRangeRemoved(0, size)
                 isEOL = false
 
-                iv_clear.visibility = View.VISIBLE
-                v_separator.visibility = View.VISIBLE
-                b_search.visibility = View.VISIBLE
-                iv_favourites.visibility = View.GONE
-                rl_search_results.visibility = View.GONE
+                ivClear.visibility = View.VISIBLE
+                vSeparator.visibility = View.VISIBLE
+                bSearch.visibility = View.VISIBLE
+                ivFavourites.visibility = View.GONE
+                rlSearchResults.visibility = View.GONE
             }
         })
     }
@@ -242,16 +270,17 @@ class SearchActivity : BaseActivity() {
     private fun loadNativeAds() {
         val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_search))
         adLoader =
-            builder.forUnifiedNativeAd { unifiedNativeAd -> // A native ad loaded successfully, check if the ad loader has finished loading
+            builder.forNativeAd { nativeAd -> // A native ad loaded successfully, check if the ad loader has finished loading
                 // and if so, insert the ads into the list.
-                mNativeAds.add(unifiedNativeAd)
+                mNativeAds.add(nativeAd)
                 if (!adLoader!!.isLoading) {
                     insertAdsInMenuItems()
+                    @Suppress("NotifyDataSetChanged")
                     adapter.notifyDataSetChanged()
                 }
             }.withAdListener(
                 object : AdListener() {
-                    override fun onAdFailedToLoad(errorCode: Int) {
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         // A native ad failed to load, check if the ad loader has finished loading
                         // and if so, insert the ads into the list.
                         Log.e(
@@ -260,6 +289,7 @@ class SearchActivity : BaseActivity() {
                         )
                         if (!adLoader!!.isLoading) {
                             insertAdsInMenuItems()
+                            @Suppress("NotifyDataSetChanged")
                             adapter.notifyDataSetChanged()
                         }
                     }
