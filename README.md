@@ -16,7 +16,7 @@ Book Finder is an Ad Supported Mobile Application that uses Google Books API to 
 * Full / Partial Preview
 * Read Reviews
 
-## Recent Changes (v1.5)
+## Recent Changes (v1.6)
 * Updated to target Android 15 (API level 36)
 * Migrated from kotlin-android-extensions to ViewBinding
 * Removed deprecated synthetics, migrated to modern Google Ads SDK
