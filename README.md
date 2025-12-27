@@ -2,7 +2,7 @@
   <img width="200" height="200" src="https://github.com/prathieshna/BookFinder/blob/master/app/src/main/ic_launcher-playstore.png" alt="Book Finder app icon">
 </div>
 
-# Book Finder v1.6
+# Book Finder v1.7
 Book Finder is an Ad Supported Mobile Application that uses Google Books API to get information about Books such as title, subtitle, description, cover image, ratings and reviews.
 
 [Download Now!](https://play.google.com/store/apps/details?id=lk.prathieshna.bookfinder)
@@ -16,16 +16,16 @@ Book Finder is an Ad Supported Mobile Application that uses Google Books API to 
 * Full / Partial Preview
 * Read Reviews
 
-## Recent Changes (v1.6)
-* Updated to target Android 15 (API level 36)
-* Migrated from kotlin-android-extensions to ViewBinding
-* Removed deprecated synthetics, migrated to modern Google Ads SDK
-* Fixed Android 12+ double splash screen issue
-* Updated Gradle to 8.13, Kotlin to 2.2.21
-* Fixed all deprecated APIs (Display metrics, Retrofit callbacks)
-* Improved fullscreen video splash on tablets
-* Minimum SDK increased to 23 (Android 6.0+) for latest libraries
-* All dependencies updated to latest stable versions
+## Recent Changes (v1.7)
+- Implement edge-to-edge display and Open Library integration
+- Update `targetSdk` to 36 and version to 1.7.
+- Enable edge-to-edge display across activities using `enableEdgeToEdge()` and window inset listeners.
+- Integrate Open Library API to fetch and display book community stats (ratings, reading status).
+- Enhance book details with a new metadata section for publisher, page count, categories, and ISBN.
+- Replace the single Google Books review button with a dual external links section for Google Books and Open Library.
+- Add `androidx.activity:activity-ktx` dependency and `OpenLibraryService` retrofit implementation.
+- Add `external_link_button_selector` drawable for stylized action buttons.
+- Remove OpenLibraryRatings.kt, add API 27+ styles for display cutout support, and update layout strings and lint suppressions.
 
 ## Road Map
 * Enhanced review features
