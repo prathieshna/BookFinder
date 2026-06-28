@@ -5,6 +5,7 @@ import lk.prathieshna.bookfinder.constant.Constants.Companion.GOOGLE_BOOKS_PAGE_
 import lk.prathieshna.bookfinder.domain.api.ApiItem
 import lk.prathieshna.bookfinder.domain.api.ApiSearchResult
 import lk.prathieshna.bookfinder.middleware.retrofit.RetrofitClient
+import lk.prathieshna.bookfinder.BuildConfig
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -19,12 +20,14 @@ interface ApiService {
         @Query("orderBy") orderBy: String? = null,
         @Query("projection") projection: String? = null,
         @Query("printType ") printType: String? = null,
-        @Query("filter") filter: String? = null
+        @Query("filter") filter: String? = null,
+        @Query("key") key: String = BuildConfig.BOOKS_API_KEY
     ): Call<ApiSearchResult>
 
     @GET(GOOGLE_BOOKS_API_VERSION + "volumes/{id}")
     fun getVolumesByID(
-        @Path("id") id: String
+        @Path("id") id: String,
+        @Query("key") key: String = BuildConfig.BOOKS_API_KEY
     ): Call<ApiItem>
 }
 

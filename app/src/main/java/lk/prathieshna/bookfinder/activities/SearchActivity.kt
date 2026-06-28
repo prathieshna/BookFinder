@@ -17,8 +17,6 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
@@ -42,10 +40,7 @@ class SearchActivity : BaseActivity() {
     private var consentInformation: ConsentInformation? = null
     private var consentForm: ConsentForm? = null
 
-    // The AdLoader used to load ads.
     private var adLoader: AdLoader? = null
-
-    // List of native ads that have been successfully loaded.
     private val mNativeAds = mutableListOf<NativeAd>()
 
     private var searchResultItems = mutableListOf<Any>()
@@ -109,11 +104,9 @@ class SearchActivity : BaseActivity() {
         setContentView(R.layout.activity_search)
         supportActionBar?.hide()
 
-        // Apply window insets for edge-to-edge
         val rootLayout = findViewById<View>(R.id.root_layout)
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
             val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-            // Keep the existing 20dp padding and add system bar insets
             val existingTopPadding = 20 * resources.displayMetrics.density.toInt()
             v.setPadding(
                 systemBars.left,
@@ -124,7 +117,6 @@ class SearchActivity : BaseActivity() {
             insets
         }
 
-        // Initialize views
         ivFavourites = findViewById(R.id.iv_favourites)
         ivClear = findViewById(R.id.iv_clear)
         vSeparator = findViewById(R.id.v_separator)
@@ -135,14 +127,11 @@ class SearchActivity : BaseActivity() {
         rvSearchResults = findViewById(R.id.rv_search_results)
 
         val params = ConsentRequestParameters.Builder().build()
-
         consentInformation = UserMessagingPlatform.getConsentInformation(this)
         consentInformation?.requestConsentInfoUpdate(
             this,
             params,
             {
-                // The consent information state was updated.
-                // You are now ready to check if a form is available.
                 if (consentInformation?.isConsentFormAvailable == true) {
                     loadForm()
                 }
@@ -150,13 +139,6 @@ class SearchActivity : BaseActivity() {
             {
                 // Handle the error.
             })
-
-        val conf = RequestConfiguration.Builder()
-            .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_UNSPECIFIED)
-            .build()
-
-        MobileAds.setRequestConfiguration(conf)
-        MobileAds.initialize(this)
 
         ivFavourites.setOnClickListener {
             val intent = Intent(this, FavouritesActivity::class.java)
@@ -174,7 +156,12 @@ class SearchActivity : BaseActivity() {
         setUpSearchButton()
         setUpSearchTextWatcher()
         setUpSearchResultsGrid()
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mNativeAds.forEach { it.destroy() }
+        mNativeAds.clear()
     }
 
     private fun setUpSearchResultsGrid() {
@@ -227,18 +214,14 @@ class SearchActivity : BaseActivity() {
 
     private fun setUpSearchTextWatcher() {
         etSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(currentText: Editable?) {
-
-            }
+            override fun afterTextChanged(currentText: Editable?) {}
 
             override fun beforeTextChanged(
                 currentText: CharSequence?,
                 start: Int,
                 count: Int,
                 after: Int
-            ) {
-
-            }
+            ) {}
 
             override fun onTextChanged(
                 currentText: CharSequence?,
@@ -262,16 +245,11 @@ class SearchActivity : BaseActivity() {
     }
 
     companion object {
-        // The number of native ads to load and display.
         const val NUMBER_OF_ADS = 1
     }
 
-
-    //AD MOB STUFF
     private fun insertAdsInMenuItems() {
-        if (mNativeAds.isEmpty()) {
-            return
-        }
+        if (mNativeAds.isEmpty()) return
         val offset: Int = searchResultItems.size / mNativeAds.size + 1
         var index = 0
         for (ad in mNativeAds) {
@@ -283,10 +261,11 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun loadNativeAds() {
+        mNativeAds.forEach { it.destroy() }
+        mNativeAds.clear()
+
         val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_search))
-        adLoader =
-            builder.forNativeAd { nativeAd -> // A native ad loaded successfully, check if the ad loader has finished loading
-                // and if so, insert the ads into the list.
+        adLoader = builder.forNativeAd { nativeAd ->
                 mNativeAds.add(nativeAd)
                 if (!adLoader!!.isLoading) {
                     insertAdsInMenuItems()
@@ -296,12 +275,7 @@ class SearchActivity : BaseActivity() {
             }.withAdListener(
                 object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        // A native ad failed to load, check if the ad loader has finished loading
-                        // and if so, insert the ads into the list.
-                        Log.e(
-                            "MainActivity", "The previous native ad failed to load. Attempting to"
-                                    + " load another."
-                        )
+                        Log.e("SearchActivity", "Native ad failed to load: ${loadAdError.message}")
                         if (!adLoader!!.isLoading) {
                             insertAdsInMenuItems()
                             @Suppress("NotifyDataSetChanged")
@@ -310,10 +284,8 @@ class SearchActivity : BaseActivity() {
                     }
                 }).build()
 
-        // Load the Native Express ad.
         adLoader?.loadAds(AdRequest.Builder().build(), NUMBER_OF_ADS)
     }
-
 
     private fun loadForm() {
         UserMessagingPlatform.loadConsentForm(
@@ -321,13 +293,10 @@ class SearchActivity : BaseActivity() {
             { consentForm ->
                 this.consentForm = consentForm
                 if (consentInformation!!.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
-                    consentForm.show(
-                        this
-                    ) { // Handle dismissal by reloading form.
+                    consentForm.show(this) {
                         loadForm()
                     }
                 }
-
             }
         ) {
             // Handle the error

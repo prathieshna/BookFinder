@@ -92,13 +92,20 @@ class FavouritesActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        favouriteItems.clear()
+        mNativeAds.forEach { it.destroy() }
         mNativeAds.clear()
+        favouriteItems.clear()
         favouriteItems.addAll(databaseHandler.getFavouriteBooks())
         favouriteItems.reverse()
         @Suppress("NotifyDataSetChanged")
         adapter.notifyDataSetChanged()
         loadNativeAds()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mNativeAds.forEach { it.destroy() }
+        mNativeAds.clear()
     }
 
     override fun onRawStateUpdate(state: UdfBaseState<AppState>) {
@@ -138,11 +145,12 @@ class FavouritesActivity : BaseActivity() {
     private fun loadNativeAds() {
         val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_favourites))
         adLoader =
-            builder.forNativeAd { nativeAd -> // A native ad loaded successfully, check if the ad loader has finished loading
-                // and if so, insert the ads into the list.
+            builder.forNativeAd { nativeAd ->
                 mNativeAds.add(nativeAd)
                 if (!adLoader!!.isLoading) {
                     insertAdsInMenuItems()
+                    @Suppress("NotifyDataSetChanged")
+                    adapter.notifyDataSetChanged()
                 }
             }.withAdListener(
                 object : AdListener() {
