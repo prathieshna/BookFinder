@@ -56,7 +56,6 @@ class FavouritesActivity : BaseActivity() {
         databaseHandler = DatabaseHandler(this.applicationContext)
         favouriteItems = databaseHandler.getFavouriteBooks().toMutableList()
         favouriteItems.reverse()
-        loadNativeAds()
 
         adapter = BookFavouriteAdapter(favouriteItems, { selectedItem ->
             dispatchAction(
@@ -120,32 +119,31 @@ class FavouritesActivity : BaseActivity() {
     }
 
     companion object {
-        const val NUMBER_OF_ADS = 1
+        private const val AD_INTERVAL = 10
     }
 
-    // AdMob Integration
-    // The AdLoader used to load ads.
     private var adLoader: AdLoader? = null
-
-    // List of native ads that have been successfully loaded.
     private val mNativeAds = mutableListOf<NativeAd>()
 
     private fun insertAdsInMenuItems() {
-        if (mNativeAds.isEmpty()) {
+        if (mNativeAds.isEmpty()) return
+        if (favouriteItems.size < AD_INTERVAL) {
+            favouriteItems.add(mNativeAds[0])
             return
         }
-        val offset: Int = favouriteItems.size / mNativeAds.size + 1
-        var index = 0
+        var index = AD_INTERVAL - 1
         for (ad in mNativeAds) {
-            favouriteItems.add(index, ad)
-            index += offset
+            if (index < favouriteItems.size) {
+                favouriteItems.add(index, ad)
+                index += AD_INTERVAL + 1
+            }
         }
     }
 
     private fun loadNativeAds() {
+        val numberOfAds = maxOf(1, favouriteItems.size / AD_INTERVAL)
         val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_favourites))
-        adLoader =
-            builder.forNativeAd { nativeAd ->
+        adLoader = builder.forNativeAd { nativeAd ->
                 mNativeAds.add(nativeAd)
                 if (!adLoader!!.isLoading) {
                     insertAdsInMenuItems()
@@ -155,12 +153,7 @@ class FavouritesActivity : BaseActivity() {
             }.withAdListener(
                 object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        // A native ad failed to load, check if the ad loader has finished loading
-                        // and if so, insert the ads into the list.
-                        Log.e(
-                            "MainActivity", "The previous native ad failed to load. Attempting to"
-                                    + " load another."
-                        )
+                        Log.e("FavouritesActivity", "Native ad failed to load: ${loadAdError.message}")
                         if (!adLoader!!.isLoading) {
                             insertAdsInMenuItems()
                             @Suppress("NotifyDataSetChanged")
@@ -169,7 +162,6 @@ class FavouritesActivity : BaseActivity() {
                     }
                 }).build()
 
-        // Load the Native Express ad.
-        adLoader?.loadAds(AdRequest.Builder().build(), NUMBER_OF_ADS)
+        adLoader?.loadAds(AdRequest.Builder().build(), numberOfAds)
     }
 }

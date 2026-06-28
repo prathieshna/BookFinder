@@ -117,6 +117,10 @@ class BookSearchAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             UNIFIED_NATIVE_AD_VIEW_TYPE -> {
+                val layoutParams = holder.itemView.layoutParams
+                if (layoutParams is androidx.recyclerview.widget.StaggeredGridLayoutManager.LayoutParams) {
+                    layoutParams.isFullSpan = true
+                }
                 val nativeAd = data[position] as NativeAd
                 populateNativeAdView(
                     nativeAd,

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -90,7 +91,7 @@ class BookFavouriteAdapter(
         private val tvBookSubtitle: TextView = itemView.findViewById(R.id.tv_book_subtitle)
         private val tvBookAuthor: TextView = itemView.findViewById(R.id.tv_book_author)
         private val ivBookThumbnail: ImageView = itemView.findViewById(R.id.iv_book_thumbnail)
-        private val bRemove: Button = itemView.findViewById(R.id.b_remove)
+        private val bRemove: ImageButton = itemView.findViewById(R.id.b_remove)
 
         init {
             itemView.setOnClickListener {

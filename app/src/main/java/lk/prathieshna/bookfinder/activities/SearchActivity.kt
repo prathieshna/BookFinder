@@ -245,17 +245,16 @@ class SearchActivity : BaseActivity() {
     }
 
     companion object {
-        const val NUMBER_OF_ADS = 1
+        private const val AD_INTERVAL = 30
     }
 
     private fun insertAdsInMenuItems() {
         if (mNativeAds.isEmpty()) return
-        val offset: Int = searchResultItems.size / mNativeAds.size + 1
-        var index = 0
+        var index = AD_INTERVAL - 1  // first ad after 30 book items
         for (ad in mNativeAds) {
-            if (searchResultItems.size >= index) {
+            if (index < searchResultItems.size) {
                 searchResultItems.add(index, ad)
-                index += offset
+                index += AD_INTERVAL + 1  // +1 accounts for the inserted ad shifting positions
             }
         }
     }
@@ -264,8 +263,13 @@ class SearchActivity : BaseActivity() {
         mNativeAds.forEach { it.destroy() }
         mNativeAds.clear()
 
+        val numberOfAds = maxOf(1, searchResultItems.size / AD_INTERVAL)
         val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_search))
         adLoader = builder.forNativeAd { nativeAd ->
+                if (nativeAd.mediaContent?.hasVideoContent() == true) {
+                    nativeAd.destroy()
+                    return@forNativeAd
+                }
                 mNativeAds.add(nativeAd)
                 if (!adLoader!!.isLoading) {
                     insertAdsInMenuItems()
@@ -284,7 +288,7 @@ class SearchActivity : BaseActivity() {
                     }
                 }).build()
 
-        adLoader?.loadAds(AdRequest.Builder().build(), NUMBER_OF_ADS)
+        adLoader?.loadAds(AdRequest.Builder().build(), numberOfAds)
     }
 
     private fun loadForm() {
