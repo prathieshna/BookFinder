@@ -17,8 +17,8 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.nativead.NativeAd
-import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
@@ -38,7 +38,6 @@ import lk.prathieshna.bookfinder.store.bookFinderStore
 class SearchActivity : BaseActivity() {
 
     private var consentInformation: ConsentInformation? = null
-    private var consentForm: ConsentForm? = null
 
     private var adLoader: AdLoader? = null
     private val mNativeAds = mutableListOf<NativeAd>()
@@ -126,19 +125,23 @@ class SearchActivity : BaseActivity() {
         rlSearchResults = findViewById(R.id.rl_search_results)
         rvSearchResults = findViewById(R.id.rv_search_results)
 
-        val params = ConsentRequestParameters.Builder().build()
         consentInformation = UserMessagingPlatform.getConsentInformation(this)
+        val params = ConsentRequestParameters.Builder().build()
         consentInformation?.requestConsentInfoUpdate(
             this,
             params,
             {
                 if (consentInformation?.isConsentFormAvailable == true) {
                     loadForm()
+                } else {
+                    initializeMobileAds()
                 }
             },
-            {
-                // Handle the error.
-            })
+            { error ->
+                Log.w("SearchActivity", "Consent update failed: ${error.message}")
+                initializeMobileAds()
+            }
+        )
 
         ivFavourites.setOnClickListener {
             val intent = Intent(this, FavouritesActivity::class.java)
@@ -246,6 +249,7 @@ class SearchActivity : BaseActivity() {
 
     companion object {
         private const val AD_INTERVAL = 30
+        private var isMobileAdsInitialized = false
     }
 
     private fun insertAdsInMenuItems() {
@@ -287,19 +291,33 @@ class SearchActivity : BaseActivity() {
         adLoader?.loadAds(AdRequest.Builder().build(), numberOfAds)
     }
 
+    private fun initializeMobileAds() {
+        if (!isMobileAdsInitialized) {
+            isMobileAdsInitialized = true
+            MobileAds.initialize(this)
+        }
+    }
+
     private fun loadForm() {
         UserMessagingPlatform.loadConsentForm(
             this,
             { consentForm ->
-                this.consentForm = consentForm
-                if (consentInformation!!.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
-                    consentForm.show(this) {
-                        loadForm()
+                if (consentInformation?.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
+                    consentForm.show(this) { formError ->
+                        if (formError != null) {
+                            Log.w("SearchActivity", "Consent form error: ${formError.message}")
+                        }
+                        initializeMobileAds()
                     }
+                } else {
+                    initializeMobileAds()
                 }
+            },
+            { error ->
+                Log.w("SearchActivity", "Consent form load failed: ${error.message}")
+                initializeMobileAds()
             }
-        ) {
-            // Handle the error
-        }
+        )
     }
+
 }

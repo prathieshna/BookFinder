@@ -13,6 +13,6 @@ class BookFinderApplication : Application() {
             .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_G)
             .build()
         MobileAds.setRequestConfiguration(conf)
-        MobileAds.initialize(this)
+        // MobileAds.initialize() is called in SearchActivity after consent is determined
     }
 }

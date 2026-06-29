@@ -14,8 +14,6 @@ import androidx.core.net.toUri
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
 import com.squareup.picasso.Picasso
 import lk.prathieshna.bookfinder.R
 import lk.prathieshna.bookfinder.actions.BaseAction
@@ -36,6 +34,7 @@ class ReaderActivity : BaseActivity() {
     // View references
     private lateinit var webView: WebView
     private lateinit var adViewContainer: FrameLayout
+    private lateinit var llBottomBar: android.widget.LinearLayout
     private lateinit var tvBookAuthor: TextView
     private lateinit var tvBookTitle: TextView
     private lateinit var tvBookSubtitle: TextView
@@ -64,10 +63,17 @@ class ReaderActivity : BaseActivity() {
         // Initialize views
         webView = findViewById(R.id.webView)
         adViewContainer = findViewById(R.id.ad_view_container)
+        llBottomBar = findViewById(R.id.ll_bottom_bar)
         tvBookAuthor = findViewById(R.id.tv_book_author)
         tvBookTitle = findViewById(R.id.tv_book_title)
         tvBookSubtitle = findViewById(R.id.tv_book_subtitle)
         ivBookThumbnail = findViewById(R.id.iv_book_thumbnail)
+
+        llBottomBar.viewTreeObserver.addOnGlobalLayoutListener {
+            if (llBottomBar.height > 0) {
+                webView.setPadding(0, 0, 0, llBottomBar.height)
+            }
+        }
 
         showLoader()
 
@@ -89,18 +95,6 @@ class ReaderActivity : BaseActivity() {
         }
         webView.loadUrl(getSelectedItemEmbeddedURL(bookFinderStore.state, this))
 
-
-        // Initialize the Mobile Ads SDK.
-        MobileAds.initialize(this) { }
-
-        // Set your test devices. Check your logcat output for the hashed device ID to
-        // get test ads on a physical device. e.g.
-        // "Use RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("ABCDEF012345"))
-        // to get test ads on this device."
-        MobileAds.setRequestConfiguration(
-            RequestConfiguration.Builder()
-                .build()
-        )
 
         adViewContainer.viewTreeObserver.addOnGlobalLayoutListener {
             if (!initialLayoutComplete) {

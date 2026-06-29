@@ -37,14 +37,8 @@
     <string name="no_preview">NO PREVIEW AVAILABLE</string>
     <string name="reader_message">Tip: Double tap for next page.</string>
 
-    <!--    <string name="ad_unit_id_search">ca-app-pub-3940256099942544/2247696110</string>-->
-    <!--    <string name="ad_unit_id_favourites">ca-app-pub-3940256099942544/1044960115</string>-->
-    <!--    <string name="ad_unit_id_detail_page_1">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--    <string name="ad_unit_id_detail_page_2">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--    <string name="ad_unit_id_reader_page">ca-app-pub-3940256099942544/6300978111</string>-->
 
-
-    <string name="version">Version 1.5.0</string>
+    <string name="version">Version 2.0</string>
     <string name="app_icon">App Icon</string>
     <string name="small_ad">Ad</string>
     <string name="now_reading">Now Reading:</string>
