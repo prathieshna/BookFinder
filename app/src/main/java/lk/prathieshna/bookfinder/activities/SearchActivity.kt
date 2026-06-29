@@ -266,10 +266,6 @@ class SearchActivity : BaseActivity() {
         val numberOfAds = maxOf(1, searchResultItems.size / AD_INTERVAL)
         val builder = AdLoader.Builder(this, getString(R.string.ad_unit_id_search))
         adLoader = builder.forNativeAd { nativeAd ->
-                if (nativeAd.mediaContent?.hasVideoContent() == true) {
-                    nativeAd.destroy()
-                    return@forNativeAd
-                }
                 mNativeAds.add(nativeAd)
                 if (!adLoader!!.isLoading) {
                     insertAdsInMenuItems()
